@@ -40,7 +40,7 @@ public class Lexer {
             lineNumber++;
             index = 0;
             while (index < line.length()) {
-                token = new Token();
+                token = new Token(lineNumber);
                 do {
                     getCharNow();
                 } while (Character.isWhitespace(charNow));
@@ -110,6 +110,8 @@ public class Lexer {
                         tokens.add(token);
                     } else {
                         retract();
+                        token.setType(TokenType.AND);
+                        tokens.add(token);
                         errors.add(new Error(lineNumber, 'a'));
                     }
                 } else if (charNow == '|') {
@@ -121,6 +123,8 @@ public class Lexer {
                         tokens.add(token);
                     } else {
                         retract();
+                        token.setType(TokenType.OR);
+                        tokens.add(token);
                         errors.add(new Error(lineNumber, 'a'));
                     }
                 } else if (charNow == '+') {
@@ -138,10 +142,11 @@ public class Lexer {
                 } else if (charNow == '/') {
                     getCharNow();
                     if (charNow == '*') {
+                        getCharNowThroughLines();
                         do {
-                            do {
+                            while (charNow != '*') {
                                 getCharNowThroughLines();
-                            } while (charNow != '*');
+                            }
                             getCharNow();
                         } while (charNow != '/');
                     } else if (charNow == '/') {

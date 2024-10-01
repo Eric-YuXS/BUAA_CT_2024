@@ -1,5 +1,6 @@
 import frontend.Lexer;
 import frontend.Error;
+import frontend.Parser;
 import frontend.Token;
 
 import java.io.BufferedReader;
@@ -7,22 +8,26 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Compiler {
     public static void main(String[] args) {
         try {
             BufferedReader in = new BufferedReader(new FileReader("testfile.txt"));
-            BufferedWriter out = new BufferedWriter(new FileWriter("lexer.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter("parser.txt"));
             BufferedWriter errorOut = new BufferedWriter(new FileWriter("error.txt"));
             Lexer lexer = new Lexer(in);
             lexer.run();
+            ArrayList<Token> tokens = lexer.getTokens();
             ArrayList<Error> errors = lexer.getErrors();
+            Parser parser = new Parser(tokens);
+            parser.run();
+            String parserOutputs = parser.getOutputs();
+            errors.addAll(parser.getErrors());
             if (errors.isEmpty()) {
-                ArrayList<Token> tokens = lexer.getTokens();
-                for (Token token : tokens) {
-                    out.write(token.toString() + "\n");
-                }
+                out.write(parserOutputs);
             } else {
+                Collections.sort(errors);
                 for (Error error : errors) {
                     errorOut.write(error.toString() + "\n");
                 }

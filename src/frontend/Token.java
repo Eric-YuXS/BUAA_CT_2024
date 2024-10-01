@@ -3,18 +3,30 @@ package frontend;
 public class Token {
     private TokenType type;
     private String string;
+    private final int lineNumber;
 
-    public Token() {
+    public Token(int lineNumber) {
         type = TokenType.UNKNOWN;
         string = "";
+        this.lineNumber = lineNumber;
     }
 
-    public TokenType getType() {
-        return type;
+    public Token(TokenType type, String string, int lineNumber) {
+        this.type = type;
+        this.string = string;
+        this.lineNumber = lineNumber;
+    }
+
+    public boolean isType(TokenType type) {
+        return this.type == type;
     }
 
     public String getString() {
         return string;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
     }
 
     public void setType(TokenType type) {
