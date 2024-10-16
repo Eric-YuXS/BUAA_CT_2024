@@ -1,3 +1,4 @@
+import SyntaxTree.CompUnit;
 import frontend.Lexer;
 import frontend.Error;
 import frontend.Parser;
@@ -21,11 +22,10 @@ public class Compiler {
             ArrayList<Token> tokens = lexer.getTokens();
             ArrayList<Error> errors = lexer.getErrors();
             Parser parser = new Parser(tokens);
-            parser.run();
-            String parserOutputs = parser.getOutputs();
+            CompUnit compUnit = parser.run();
             errors.addAll(parser.getErrors());
             if (errors.isEmpty()) {
-                out.write(parserOutputs);
+                out.write(compUnit.toString());
             } else {
                 Collections.sort(errors);
                 for (Error error : errors) {

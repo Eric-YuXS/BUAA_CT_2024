@@ -38,6 +38,6 @@ public class Token {
     }
 
     public String toString() {
-        return type + " " + string;
+        return type + " " + string + "\n";
     }
 }
