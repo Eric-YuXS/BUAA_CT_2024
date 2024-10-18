@@ -259,16 +259,21 @@ public class Parser {
                 getNextToken();
                 if (token.isType(TokenType.RPARENT)) {
                     rParent = token;
-                } else {
+                } else if (token.isType(TokenType.LPARENT) || token.isType(TokenType.IDENFR)
+                        || token.isType(TokenType.INTCON) || token.isType(TokenType.CHRCON)
+                        || token.isType(TokenType.NOT) || token.isType(TokenType.PLUS) || token.isType(TokenType.MINU)) {
                     retract(1);
                     funcRParams = parseFuncRParams();
                     getNextToken();
                     if (token.isType(TokenType.RPARENT)) {
                         rParent = token;
                     } else {
-                        errors.add(new Error(getLastTokenLineNumber(), 'j'));
                         retract(1);
+                        errors.add(new Error(getLastTokenLineNumber(), 'j'));
                     }
+                } else {
+                    retract(1);
+                    errors.add(new Error(getLastTokenLineNumber(), 'j'));
                 }
                 return new UnaryExp2(ident, lParent, funcRParams, rParent);
             } else {
@@ -310,18 +315,19 @@ public class Parser {
                 getNextToken();
                 if (token.isType(TokenType.RPARENT)) {
                     rParent = token;
-                } else {
+                } else if (token.isType(TokenType.LPARENT) || token.isType(TokenType.IDENFR)
+                        || token.isType(TokenType.INTCON) || token.isType(TokenType.CHRCON)
+                        || token.isType(TokenType.NOT) || token.isType(TokenType.PLUS) || token.isType(TokenType.MINU)) {
                     retract(1);
                     funcRParams = tryParseFuncRParams();
-                    if (funcRParams == null) {
-                        return null;
-                    }
                     getNextToken();
                     if (token.isType(TokenType.RPARENT)) {
                         rParent = token;
                     } else {
                         retract(1);
                     }
+                } else {
+                    retract(1);
                 }
                 return new UnaryExp2(ident, lParent, funcRParams, rParent);
             } else {
@@ -678,6 +684,9 @@ public class Parser {
                 getNextToken();
                 if (token.isType(TokenType.RPARENT)) {
                     rParent = token;
+                } else if (token.isType(TokenType.LBRACE)) {
+                    errors.add(new Error(getLastTokenLineNumber(), 'j'));
+                    retract(1);
                 } else {
                     retract(1);
                     funcFParams = parseFuncFParams();
@@ -932,6 +941,9 @@ public class Parser {
                         setIndex(oriIndex);
                         errors.add(new Error(tokens.get(index - 1).getLineNumber(), 'i'));
                     } else {
+                        setIndex(oriIndex);
+                        exp = parseExp();
+                        getNextToken();
                         if (token.isType(TokenType.SEMICN)) {
                             semicn = token;
                         } else {
@@ -987,9 +999,12 @@ public class Parser {
         } else if (token.isType(TokenType.IDENFR)) {
             retract(1);
             int oriIndex = index;
-            LVal lVal = tryParseLVal();
+            tryParseLVal();
             getNextToken();
             if (token.isType(TokenType.ASSIGN)) {
+                setIndex(oriIndex);
+                LVal lVal = parseLVal();
+                getNextToken();
                 Token assign = token;
                 getNextToken();
                 if (token.isType(TokenType.GETINTTK)) {
