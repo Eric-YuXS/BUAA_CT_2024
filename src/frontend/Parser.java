@@ -109,8 +109,8 @@ public class Parser {
             if (token.isType(TokenType.SEMICN)) {
                 semicn = token;
             } else {
-                errors.add(new Error(getLastTokenLineNumber(), 'i'));
                 retract(1);
+                errors.add(new Error(getCurTokenLineNumber(), 'i'));
             }
             return new ConstDecl(constTk, bType, constDefs, commas, semicn);
         } else {
@@ -144,8 +144,8 @@ public class Parser {
                 if (token.isType(TokenType.RBRACK)) {
                     rBrack = token;
                 } else {
-                    errors.add(new Error(getLastTokenLineNumber(), 'k'));
                     retract(1);
+                    errors.add(new Error(getCurTokenLineNumber(), 'k'));
                 }
                 getNextToken();
             }
@@ -259,21 +259,30 @@ public class Parser {
                 getNextToken();
                 if (token.isType(TokenType.RPARENT)) {
                     rParent = token;
-                } else if (token.isType(TokenType.LPARENT) || token.isType(TokenType.IDENFR)
-                        || token.isType(TokenType.INTCON) || token.isType(TokenType.CHRCON)
-                        || token.isType(TokenType.NOT) || token.isType(TokenType.PLUS) || token.isType(TokenType.MINU)) {
-                    retract(1);
-                    funcRParams = parseFuncRParams();
-                    getNextToken();
-                    if (token.isType(TokenType.RPARENT)) {
-                        rParent = token;
-                    } else {
-                        retract(1);
-                        errors.add(new Error(getLastTokenLineNumber(), 'j'));
-                    }
                 } else {
                     retract(1);
-                    errors.add(new Error(getLastTokenLineNumber(), 'j'));
+                    int oriIndex = index;
+                    Exp exp = tryParseExp();
+                    if (exp == null) {
+                        setIndex(oriIndex);
+                        errors.add(new Error(getCurTokenLineNumber(), 'j'));
+                    } else {
+                        getNextToken();
+                        if (token.isType(TokenType.ASSIGN)) {
+                            setIndex(oriIndex);
+                            errors.add(new Error(getCurTokenLineNumber(), 'j'));
+                        } else {
+                            setIndex(oriIndex);
+                            funcRParams = parseFuncRParams();
+                            getNextToken();
+                            if (token.isType(TokenType.RPARENT)) {
+                                rParent = token;
+                            } else {
+                                retract(1);
+                                errors.add(new Error(getCurTokenLineNumber(), 'j'));
+                            }
+                        }
+                    }
                 }
                 return new UnaryExp2(ident, lParent, funcRParams, rParent);
             } else {
@@ -315,19 +324,30 @@ public class Parser {
                 getNextToken();
                 if (token.isType(TokenType.RPARENT)) {
                     rParent = token;
-                } else if (token.isType(TokenType.LPARENT) || token.isType(TokenType.IDENFR)
-                        || token.isType(TokenType.INTCON) || token.isType(TokenType.CHRCON)
-                        || token.isType(TokenType.NOT) || token.isType(TokenType.PLUS) || token.isType(TokenType.MINU)) {
-                    retract(1);
-                    funcRParams = tryParseFuncRParams();
-                    getNextToken();
-                    if (token.isType(TokenType.RPARENT)) {
-                        rParent = token;
-                    } else {
-                        retract(1);
-                    }
                 } else {
                     retract(1);
+                    int oriIndex = index;
+                    Exp exp = tryParseExp();
+                    if (exp == null) {
+                        setIndex(oriIndex);
+                    } else {
+                        getNextToken();
+                        if (token.isType(TokenType.ASSIGN)) {
+                            setIndex(oriIndex);
+                        } else {
+                            setIndex(oriIndex);
+                            funcRParams = tryParseFuncRParams();
+                            if (funcRParams == null) {
+                                return null;
+                            }
+                            getNextToken();
+                            if (token.isType(TokenType.RPARENT)) {
+                                rParent = token;
+                            } else {
+                                retract(1);
+                            }
+                        }
+                    }
                 }
                 return new UnaryExp2(ident, lParent, funcRParams, rParent);
             } else {
@@ -354,8 +374,8 @@ public class Parser {
             if (token.isType(TokenType.RPARENT)) {
                 rParent = token;
             } else {
-                errors.add(new Error(getLastTokenLineNumber(), 'j'));
                 retract(1);
+                errors.add(new Error(getCurTokenLineNumber(), 'j'));
             }
             return new PrimaryExp1(lParent, exp, rParent);
         } else if (token.isType(TokenType.IDENFR)) {
@@ -436,8 +456,8 @@ public class Parser {
                 if (token.isType(TokenType.RBRACK)) {
                     rBrack = token;
                 } else {
-                    errors.add(new Error(getLastTokenLineNumber(), 'k'));
                     retract(1);
+                    errors.add(new Error(getCurTokenLineNumber(), 'k'));
                 }
             } else {
                 retract(1);
@@ -596,8 +616,8 @@ public class Parser {
         if (token.isType(TokenType.SEMICN)) {
             semicn = token;
         } else {
-            errors.add(new Error(getLastTokenLineNumber(), 'i'));
             retract(1);
+            errors.add(new Error(getCurTokenLineNumber(), 'i'));
         }
         return new VarDecl(bType, varDefs, commas, semicn);
     }
@@ -616,10 +636,11 @@ public class Parser {
                 getNextToken();
                 if (token.isType(TokenType.RBRACK)) {
                     rBrack = token;
-                    getNextToken();
                 } else {
-                    errors.add(new Error(getLastTokenLineNumber(), 'k'));
+                    retract(1);
+                    errors.add(new Error(getCurTokenLineNumber(), 'k'));
                 }
+                getNextToken();
             }
             Token assign = null;
             InitVal initVal = null;
@@ -685,8 +706,8 @@ public class Parser {
                 if (token.isType(TokenType.RPARENT)) {
                     rParent = token;
                 } else if (token.isType(TokenType.LBRACE)) {
-                    errors.add(new Error(getLastTokenLineNumber(), 'j'));
                     retract(1);
+                    errors.add(new Error(getCurTokenLineNumber(), 'j'));
                 } else {
                     retract(1);
                     funcFParams = parseFuncFParams();
@@ -694,8 +715,8 @@ public class Parser {
                     if (token.isType(TokenType.RPARENT)) {
                         rParent = token;
                     } else {
-                        errors.add(new Error(getLastTokenLineNumber(), 'j'));
                         retract(1);
+                        errors.add(new Error(getCurTokenLineNumber(), 'j'));
                     }
                 }
                 return new FuncDef(funcType, ident, lParent, funcFParams, rParent, parseBlock());
@@ -747,8 +768,8 @@ public class Parser {
                 if (token.isType(TokenType.RBRACK)) {
                     rBrack = token;
                 } else {
-                    errors.add(new Error(getLastTokenLineNumber(), 'k'));
                     retract(1);
+                    errors.add(new Error(getCurTokenLineNumber(), 'k'));
                 }
             } else {
                 retract(1);
@@ -822,8 +843,8 @@ public class Parser {
                 if (token.isType(TokenType.RPARENT)) {
                     rParent = token;
                 } else {
-                    errors.add(new Error(getLastTokenLineNumber(), 'j'));
                     retract(1);
+                    errors.add(new Error(getCurTokenLineNumber(), 'j'));
                 }
                 Stmt stmt = parseStmt();
                 Token elseTk = null;
@@ -889,8 +910,8 @@ public class Parser {
                     if (token.isType(TokenType.RPARENT)) {
                         rParent = token;
                     } else {
-                        errors.add(new Error(getLastTokenLineNumber(), 'j'));
                         retract(1);
+                        errors.add(new Error(getCurTokenLineNumber(), 'j'));
                     }
                 }
                 return new Stmt5(forTk, lParent, forStmt1, semicn1, cond, semicn2, forStmt2, rParent, parseStmt());
@@ -905,8 +926,8 @@ public class Parser {
             if (token.isType(TokenType.SEMICN)) {
                 semicn = token;
             } else {
-                errors.add(new Error(getLastTokenLineNumber(), 'i'));
                 retract(1);
+                errors.add(new Error(getCurTokenLineNumber(), 'i'));
             }
             return new Stmt6(breakTk, semicn);
         } else if (token.isType(TokenType.CONTINUETK)) {
@@ -916,8 +937,8 @@ public class Parser {
             if (token.isType(TokenType.SEMICN)) {
                 semicn = token;
             } else {
-                errors.add(new Error(getLastTokenLineNumber(), 'i'));
                 retract(1);
+                errors.add(new Error(getCurTokenLineNumber(), 'i'));
             }
             return new Stmt7(continueTk, semicn);
         } else if (token.isType(TokenType.RETURNTK)) {
@@ -933,13 +954,13 @@ public class Parser {
                 exp = tryParseExp();
                 if (exp == null) {
                     setIndex(oriIndex);
-                    errors.add(new Error(tokens.get(index - 1).getLineNumber(), 'i'));
+                    errors.add(new Error(getCurTokenLineNumber(), 'i'));
                 } else {
                     getNextToken();
                     if (token.isType(TokenType.ASSIGN)) {
                         exp = null;
                         setIndex(oriIndex);
-                        errors.add(new Error(tokens.get(index - 1).getLineNumber(), 'i'));
+                        errors.add(new Error(getCurTokenLineNumber(), 'i'));
                     } else {
                         setIndex(oriIndex);
                         exp = parseExp();
@@ -947,8 +968,8 @@ public class Parser {
                         if (token.isType(TokenType.SEMICN)) {
                             semicn = token;
                         } else {
-                            errors.add(new Error(getLastTokenLineNumber(), 'i'));
                             retract(1);
+                            errors.add(new Error(getCurTokenLineNumber(), 'i'));
                         }
                     }
                 }
@@ -974,16 +995,16 @@ public class Parser {
                     if (token.isType(TokenType.RPARENT)) {
                         rParent = token;
                     } else {
-                        errors.add(new Error(getLastTokenLineNumber(), 'j'));
                         retract(1);
+                        errors.add(new Error(getCurTokenLineNumber(), 'j'));
                     }
                     Token semicn = null;
                     getNextToken();
                     if (token.isType(TokenType.SEMICN)) {
                         semicn = token;
                     } else {
-                        errors.add(new Error(getLastTokenLineNumber(), 'i'));
                         retract(1);
+                        errors.add(new Error(getCurTokenLineNumber(), 'i'));
                     }
                     return new Stmt11(printf, lParent, stringConst, exps, commas, rParent, semicn);
                 } else {
@@ -1018,8 +1039,8 @@ public class Parser {
                         if (token.isType(TokenType.RPARENT)) {
                             rParent = token;
                         } else {
-                            errors.add(new Error(getLastTokenLineNumber(), 'j'));
                             retract(1);
+                            errors.add(new Error(getCurTokenLineNumber(), 'j'));
                         }
                     } else {
                         System.err.println("Error at token " + token + ": expected LPARENT");
@@ -1030,8 +1051,8 @@ public class Parser {
                     if (token.isType(TokenType.SEMICN)) {
                         semicn = token;
                     } else {
-                        errors.add(new Error(getLastTokenLineNumber(), 'i'));
                         retract(1);
+                        errors.add(new Error(getCurTokenLineNumber(), 'i'));
                     }
                     return new Stmt9(lVal, assign, getint, lParent, rParent, semicn);
                 } else if (token.isType(TokenType.GETCHARTK)) {
@@ -1045,8 +1066,8 @@ public class Parser {
                         if (token.isType(TokenType.RPARENT)) {
                             rParent = token;
                         } else {
-                            errors.add(new Error(getLastTokenLineNumber(), 'j'));
                             retract(1);
+                            errors.add(new Error(getCurTokenLineNumber(), 'j'));
                         }
                     } else {
                         System.err.println("Error at token " + token + ": expected LPARENT");
@@ -1057,8 +1078,8 @@ public class Parser {
                     if (token.isType(TokenType.SEMICN)) {
                         semicn = token;
                     } else {
-                        errors.add(new Error(getLastTokenLineNumber(), 'i'));
                         retract(1);
+                        errors.add(new Error(getCurTokenLineNumber(), 'i'));
                     }
                     return new Stmt10(lVal, assign, getchar, lParent, rParent, semicn);
                 } else {
@@ -1069,8 +1090,8 @@ public class Parser {
                     if (token.isType(TokenType.SEMICN)) {
                         semicn = token;
                     } else {
-                        errors.add(new Error(getLastTokenLineNumber(), 'i'));
                         retract(1);
+                        errors.add(new Error(getCurTokenLineNumber(), 'i'));
                     }
                     return new Stmt1(lVal, assign, exp, semicn);
                 }
@@ -1082,8 +1103,8 @@ public class Parser {
                 if (token.isType(TokenType.SEMICN)) {
                     semicn = token;
                 } else {
-                    errors.add(new Error(getLastTokenLineNumber(), 'i'));
                     retract(1);
+                    errors.add(new Error(getCurTokenLineNumber(), 'i'));
                 }
                 return new Stmt2(exp, semicn);
             }
@@ -1095,8 +1116,8 @@ public class Parser {
             if (token.isType(TokenType.SEMICN)) {
                 semicn = token;
             } else {
-                errors.add(new Error(getLastTokenLineNumber(), 'i'));
                 retract(1);
+                errors.add(new Error(getCurTokenLineNumber(), 'i'));
             }
             return new Stmt2(exp, semicn);
         }
@@ -1188,8 +1209,8 @@ public class Parser {
                     if (token.isType(TokenType.RPARENT)) {
                         rParent = token;
                     } else {
-                        errors.add(new Error(getLastTokenLineNumber(), 'j'));
                         retract(1);
+                        errors.add(new Error(getCurTokenLineNumber(), 'j'));
                     }
                     return new MainFuncDef(intTk, main, lParent, rParent, parseBlock());
                 } else {
@@ -1215,8 +1236,8 @@ public class Parser {
         index++;
     }
 
-    private int getLastTokenLineNumber() {
-        return tokens.get(index - 2).getLineNumber();
+    private int getCurTokenLineNumber() {
+        return tokens.get(index - 1).getLineNumber();
     }
 
     private void retract(int count) {
