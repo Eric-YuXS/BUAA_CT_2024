@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+
 public class Stmt implements SyntaxTreeNode {
     /* Stmt → LVal '=' Exp ';'
             | [Exp] ';'
@@ -16,5 +18,9 @@ public class Stmt implements SyntaxTreeNode {
     @Override
     public String toString() {
         return "super<Stmt>\n";
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        System.err.println("super<Stmt>");
     }
 }

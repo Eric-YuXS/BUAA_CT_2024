@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+
 public class BlockItem2 extends BlockItem {  // BlockItem → Stmt
     private final Stmt stmt;
 
@@ -11,5 +13,10 @@ public class BlockItem2 extends BlockItem {  // BlockItem → Stmt
     @Override
     public String toString() {
         return stmt.toString();
+    }
+
+    @Override
+    public void analyze(SymbolStack symbolStack) {
+        stmt.analyze(symbolStack);
     }
 }

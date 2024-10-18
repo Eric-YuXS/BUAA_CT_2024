@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.Token;
 
 import java.util.ArrayList;
@@ -29,5 +31,12 @@ public class VarDecl implements SyntaxTreeNode {  // VarDecl → BType VarDef { 
             sb.append(semicn);
         }
         return sb.append("<VarDecl>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        SymbolType symbolType = bType.getSymbolType();
+        for (VarDef varDef : varDefs) {
+            varDef.analyze(symbolStack, symbolType);
+        }
     }
 }

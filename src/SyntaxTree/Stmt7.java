@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 public class Stmt7 extends Stmt {  // Stmt → 'continue' ';'
@@ -19,5 +20,8 @@ public class Stmt7 extends Stmt {  // Stmt → 'continue' ';'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
     }
 }

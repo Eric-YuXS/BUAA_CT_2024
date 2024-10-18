@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.Token;
 
 import java.util.ArrayList;
@@ -31,5 +33,12 @@ public class ConstDecl implements SyntaxTreeNode {  // ConstDecl → 'const' BTy
             sb.append(semicn);
         }
         return sb.append("<ConstDecl>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        SymbolType symbolType = bType.getSymbolType().varToConst();
+        for (ConstDef constDef : constDefs) {
+            constDef.analyze(symbolStack, symbolType);
+        }
     }
 }

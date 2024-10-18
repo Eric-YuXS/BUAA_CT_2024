@@ -1,5 +1,8 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+import frontend.SymbolType;
+
 public class UnaryExp1 extends UnaryExp {  // UnaryExp → PrimaryExp
     private final PrimaryExp primaryExp;
 
@@ -11,5 +14,9 @@ public class UnaryExp1 extends UnaryExp {  // UnaryExp → PrimaryExp
     @Override
     public String toString() {
         return primaryExp + "<UnaryExp>\n";
+    }
+
+    public SymbolType analyze(SymbolStack symbolStack) {
+        return primaryExp.analyze(symbolStack);
     }
 }

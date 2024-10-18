@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.Token;
 
 public class PrimaryExp1 extends PrimaryExp {  // PrimaryExp → '(' Exp ')'
@@ -22,5 +24,9 @@ public class PrimaryExp1 extends PrimaryExp {  // PrimaryExp → '(' Exp ')'
             sb.append(rParent);
         }
         return sb.append("<PrimaryExp>\n").toString();
+    }
+
+    public SymbolType analyze(SymbolStack symbolStack) {
+        return exp.analyze(symbolStack);
     }
 }

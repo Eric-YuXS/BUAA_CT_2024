@@ -1,6 +1,7 @@
 package SyntaxTree;
 
-import frontend.Token;
+import frontend.*;
+import frontend.Error;
 
 public class FuncDef implements SyntaxTreeNode {  // FuncDef → FuncType Ident '(' [FuncFParams] ')' Block
     private final FuncType funcType;
@@ -30,5 +31,19 @@ public class FuncDef implements SyntaxTreeNode {  // FuncDef → FuncType Ident 
             sb.append(rParent);
         }
         return sb.append(block).append("<FuncDef>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        SymbolType symbolType = funcType.getSymbolType();
+        FuncSymbol funcSymbol = new FuncSymbol(symbolType, ident.getString());
+        if (!symbolStack.addSymbol(funcSymbol)) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
+        }
+        if (funcFParams != null) {
+            funcSymbol.setFParams(funcFParams.analyze(symbolStack));
+            block.analyze(symbolStack, true);
+        } else {
+            block.analyze(symbolStack, false);
+        }
     }
 }

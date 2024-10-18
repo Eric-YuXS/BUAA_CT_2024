@@ -1,5 +1,9 @@
 package SyntaxTree;
 
+import frontend.Error;
+import frontend.Symbol;
+import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.Token;
 
 public class FuncFParam implements SyntaxTreeNode {  // FuncFParam → BType Ident ['[' ']']
@@ -26,5 +30,17 @@ public class FuncFParam implements SyntaxTreeNode {  // FuncFParam → BType Ide
             }
         }
         return sb.append("<FuncFParam>\n").toString();
+    }
+
+    public Symbol analyze(SymbolStack symbolStack) {
+        SymbolType symbolType = bType.getSymbolType();
+        if (lBrack != null) {
+            symbolType = symbolType.varToArray();
+        }
+        Symbol symbol = new Symbol(symbolType, ident.getString());
+        if (!symbolStack.addSymbol(symbol)) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
+        }
+        return symbol;
     }
 }

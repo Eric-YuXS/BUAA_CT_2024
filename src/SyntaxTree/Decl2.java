@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+
 public class Decl2 extends Decl {  // Decl → VarDecl
     private final VarDecl varDecl;
 
@@ -11,5 +13,10 @@ public class Decl2 extends Decl {  // Decl → VarDecl
     @Override
     public String toString() {
         return varDecl.toString();
+    }
+
+    @Override
+    public void analyze(SymbolStack symbolStack) {
+        varDecl.analyze(symbolStack);
     }
 }

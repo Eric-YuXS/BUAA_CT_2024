@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 public class Stmt1 extends Stmt {  // Stmt → LVal '=' Exp ';'
@@ -24,5 +25,10 @@ public class Stmt1 extends Stmt {  // Stmt → LVal '=' Exp ';'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        lVal.analyze(symbolStack);
+        exp.analyze(symbolStack);
     }
 }

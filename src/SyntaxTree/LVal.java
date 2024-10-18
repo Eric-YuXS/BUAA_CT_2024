@@ -1,6 +1,7 @@
 package SyntaxTree;
 
-import frontend.Token;
+import frontend.*;
+import frontend.Error;
 
 public class LVal implements SyntaxTreeNode {  // LVal → Ident ['[' Exp ']']
     private final Token ident;
@@ -26,5 +27,26 @@ public class LVal implements SyntaxTreeNode {  // LVal → Ident ['[' Exp ']']
             }
         }
         return sb.append("<LVal>\n").toString();
+    }
+
+    public SymbolType analyze(SymbolStack symbolStack) {
+        Symbol symbol = symbolStack.getSymbol(ident.getString());
+        if (symbol == null) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'c'));
+//        } else if (exp != null && (symbol.getSymbolType().isVar() || symbol.getSymbolType().isFunc())) {
+//            System.err.println(ident.getString() + "is not an array!");
+//            return null;
+//        } else if (exp == null && (symbol.getSymbolType().isArray() || symbol.getSymbolType().isFunc())) {
+//            System.err.println(ident.getString() + "is not a variable!");
+//            return null;
+        } else if (symbol.getSymbolType().isConst()) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'h'));
+        }
+        if (exp != null) {
+            exp.analyze(symbolStack);
+            return symbol != null ? symbol.getSymbolType().arrayToVar() : null;
+        } else {
+            return symbol != null ? symbol.getSymbolType() : null;
+        }
     }
 }
