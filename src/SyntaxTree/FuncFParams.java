@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.Symbol;
+import frontend.SymbolStack;
 import frontend.Token;
 
 import java.util.ArrayList;
@@ -22,5 +24,14 @@ public class FuncFParams implements SyntaxTreeNode {  // FuncFParams → FuncFPa
             sb.append(comma).append(funcFParams.get(funcFParamsIndex++));
         }
         return sb.append("<FuncFParams>\n").toString();
+    }
+
+    public ArrayList<Symbol> analyze(SymbolStack symbolStack) {
+        symbolStack.enterScope();
+        ArrayList<Symbol> symbols = new ArrayList<>();
+        for (FuncFParam funcFParam : funcFParams) {
+            symbols.add(funcFParam.analyze(symbolStack));
+        }
+        return symbols;
     }
 }

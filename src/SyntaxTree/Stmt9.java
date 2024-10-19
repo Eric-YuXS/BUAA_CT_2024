@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 public class Stmt9 extends Stmt {  // Stmt → LVal '=' 'getint''('')'';'
@@ -31,5 +32,8 @@ public class Stmt9 extends Stmt {  // Stmt → LVal '=' 'getint''('')'';'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
     }
 }

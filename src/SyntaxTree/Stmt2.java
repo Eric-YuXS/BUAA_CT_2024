@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 public class Stmt2 extends Stmt {  // Stmt → [Exp] ';'
@@ -22,5 +23,8 @@ public class Stmt2 extends Stmt {  // Stmt → [Exp] ';'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
     }
 }

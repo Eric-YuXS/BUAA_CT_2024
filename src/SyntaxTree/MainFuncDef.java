@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 public class MainFuncDef implements SyntaxTreeNode {  // MainFuncDef → 'int' 'main' '(' ')' Block
@@ -25,5 +26,9 @@ public class MainFuncDef implements SyntaxTreeNode {  // MainFuncDef → 'int' '
             sb.append(rParent);
         }
         return sb.append(block).append("<MainFuncDef>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        block.analyze(symbolStack, false);
     }
 }

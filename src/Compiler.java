@@ -1,8 +1,6 @@
 import SyntaxTree.CompUnit;
-import frontend.Lexer;
+import frontend.*;
 import frontend.Error;
-import frontend.Parser;
-import frontend.Token;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,17 +13,26 @@ public class Compiler {
     public static void main(String[] args) {
         try {
             BufferedReader in = new BufferedReader(new FileReader("testfile.txt"));
-            BufferedWriter out = new BufferedWriter(new FileWriter("parser.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter("symbol.txt"));
             BufferedWriter errorOut = new BufferedWriter(new FileWriter("error.txt"));
+
             Lexer lexer = new Lexer(in);
             lexer.run();
             ArrayList<Token> tokens = lexer.getTokens();
             ArrayList<Error> errors = lexer.getErrors();
+
             Parser parser = new Parser(tokens);
             CompUnit compUnit = parser.run();
             errors.addAll(parser.getErrors());
+
+            SymbolStack symbolStack = new SymbolStack();
+            compUnit.analyze(symbolStack);
+            ArrayList<SymbolTable> symbolTables = SymbolTable.getSymbolTables();
+
             if (errors.isEmpty()) {
-                out.write(compUnit.toString());
+                for (SymbolTable symbolTable : symbolTables) {
+                    out.write(symbolTable.toString());
+                }
             } else {
                 Collections.sort(errors);
                 for (Error error : errors) {

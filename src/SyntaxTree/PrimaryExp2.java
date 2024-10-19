@@ -1,5 +1,8 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+import frontend.SymbolType;
+
 public class PrimaryExp2 extends PrimaryExp {  // PrimaryExp → LVal
     private final LVal lVal;
 
@@ -11,5 +14,9 @@ public class PrimaryExp2 extends PrimaryExp {  // PrimaryExp → LVal
     @Override
     public String toString() {
         return lVal + "<PrimaryExp>\n";
+    }
+
+    public SymbolType analyze(SymbolStack symbolStack) {
+        return lVal.analyze(symbolStack);
     }
 }

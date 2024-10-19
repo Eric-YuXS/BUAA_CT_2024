@@ -1,5 +1,9 @@
 package SyntaxTree;
 
+import frontend.Error;
+import frontend.Symbol;
+import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.Token;
 
 public class ConstDef implements SyntaxTreeNode {  // ConstDef → Ident [ '[' ConstExp ']' ] '=' ConstInitVal
@@ -30,5 +34,14 @@ public class ConstDef implements SyntaxTreeNode {  // ConstDef → Ident [ '[' C
             }
         }
         return sb.append(assign).append(constInitVal).append("<ConstDef>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack, SymbolType symbolType) {
+        if (constExp != null) {
+            symbolType = symbolType.constToConstArray();
+        }
+        if (!symbolStack.addSymbol(new Symbol(symbolType, ident.getString()))) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
+        }
     }
 }

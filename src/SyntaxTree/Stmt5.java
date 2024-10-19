@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 public class Stmt5 extends Stmt {  // Stmt → 'for' '(' [ForStmt] ';' [Cond] ';' [ForStmt] ')' Stmt
@@ -46,5 +47,9 @@ public class Stmt5 extends Stmt {  // Stmt → 'for' '(' [ForStmt] ';' [Cond] ';
             sb.append(rParent);
         }
         return sb.append(stmt).append("<Stmt>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        stmt.analyze(symbolStack);
     }
 }

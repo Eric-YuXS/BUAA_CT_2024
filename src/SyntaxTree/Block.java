@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 import java.util.ArrayList;
@@ -23,5 +24,15 @@ public class Block implements SyntaxTreeNode {  // Block → '{' { BlockItem } '
             sb.append(blockItem);
         }
         return sb.append(rBrace).append("<Block>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack, boolean hasFParams) {
+        if (!hasFParams) {
+            symbolStack.enterScope();
+        }
+        for (BlockItem blockItem : blockItems) {
+            blockItem.analyze(symbolStack);
+        }
+        symbolStack.exitScope();
     }
 }

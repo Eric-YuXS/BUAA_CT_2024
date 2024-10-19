@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.Token;
 
 import java.util.ArrayList;
@@ -22,5 +24,19 @@ public class AddExp implements SyntaxTreeNode {  // AddExp → MulExp | AddExp (
             sb.append("<AddExp>\n").append(operator).append(mulExps.get(mulExpsIndex++));
         }
         return sb.append("<AddExp>\n").toString();
+    }
+
+    public SymbolType analyze(SymbolStack symbolStack) {
+        if (mulExps.size() == 1) {
+            return mulExps.get(0).analyze(symbolStack);
+        } else {
+            for (MulExp mulExp : mulExps) {
+                if (mulExp.analyze(symbolStack) == SymbolType.VoidFunc) {
+                    System.err.println("Calculate with void!");
+                    return null;
+                }
+            }
+            return SymbolType.Int;
+        }
     }
 }

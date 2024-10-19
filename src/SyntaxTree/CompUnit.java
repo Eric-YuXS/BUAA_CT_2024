@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+
 import java.util.ArrayList;
 
 public class CompUnit implements SyntaxTreeNode {  // CompUnit → {Decl} {FuncDef} MainFuncDef
@@ -23,5 +25,15 @@ public class CompUnit implements SyntaxTreeNode {  // CompUnit → {Decl} {FuncD
             sb.append(funcDef);
         }
         return sb.append(mainFuncDef).append("<CompUnit>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        for (Decl decl : decls) {
+            decl.analyze(symbolStack);
+        }
+        for (FuncDef funcDef : funcDefs) {
+            funcDef.analyze(symbolStack);
+        }
+        mainFuncDef.analyze(symbolStack);
     }
 }

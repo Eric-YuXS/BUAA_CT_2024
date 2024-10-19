@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 import java.util.ArrayList;
@@ -40,5 +41,8 @@ public class Stmt11 extends Stmt {  // Stmt → 'printf''('StringConst {','Exp}'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
     }
 }

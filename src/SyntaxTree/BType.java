@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolType;
 import frontend.Token;
 
 public class BType implements SyntaxTreeNode {  // BType → 'int' | 'char'
@@ -12,5 +13,9 @@ public class BType implements SyntaxTreeNode {  // BType → 'int' | 'char'
     @Override
     public String toString() {
         return bType.toString();
+    }
+
+    public SymbolType getSymbolType() {
+        return SymbolType.TokenToSymbolType(bType);
     }
 }

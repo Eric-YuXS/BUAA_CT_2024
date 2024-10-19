@@ -1,5 +1,8 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+import frontend.SymbolType;
+
 public class PrimaryExp4 extends PrimaryExp {  // PrimaryExp → Character
     private final Character character;
 
@@ -11,5 +14,9 @@ public class PrimaryExp4 extends PrimaryExp {  // PrimaryExp → Character
     @Override
     public String toString() {
         return character + "<PrimaryExp>\n";
+    }
+
+    public SymbolType analyze(SymbolStack symbolStack) {
+        return SymbolType.Char;
     }
 }

@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 public class Stmt4 extends Stmt {  // Stmt → 'if' '(' Cond ')' Stmt [ 'else' Stmt ]
@@ -34,5 +35,12 @@ public class Stmt4 extends Stmt {  // Stmt → 'if' '(' Cond ')' Stmt [ 'else' S
             sb.append(elseTk).append(elseStmt);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        stmt.analyze(symbolStack);
+        if (elseStmt != null) {
+            elseStmt.analyze(symbolStack);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package SyntaxTree;
 
-import frontend.Token;
+import frontend.*;
+import frontend.Error;
 
 public class UnaryExp2 extends UnaryExp {  // UnaryExp → Ident '(' [FuncRParams] ')'
     private final Token ident;
@@ -27,5 +28,20 @@ public class UnaryExp2 extends UnaryExp {  // UnaryExp → Ident '(' [FuncRParam
             sb.append(rParent);
         }
         return sb.append("<UnaryExp>\n").toString();
+    }
+
+    public SymbolType analyze(SymbolStack symbolStack) {
+        Symbol symbol = symbolStack.getSymbol(ident.getString());
+        if (symbol == null) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'c'));
+            funcRParams.analyze(symbolStack);
+            return null;
+        } else if (symbol instanceof FuncSymbol) {
+            funcRParams.analyze(symbolStack, (FuncSymbol) symbol, ident);
+            return symbol.getSymbolType().funcToVarOrVoid();
+        } else {
+            System.err.println(ident.getString() + "is not a function!");
+            return null;
+        }
     }
 }
