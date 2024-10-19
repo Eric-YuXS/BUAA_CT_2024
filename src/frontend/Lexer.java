@@ -235,11 +235,8 @@ public class Lexer {
     }
 
     private void getCharNow() {
-        if (index > line.length()) {
-            System.err.println("Line ended! Line: " + lineNumber + " Index: " + index);
-        } else if (index == line.length()) {
+        if (index == line.length()) {
             charNow = (char) -1;
-            index++;
         } else {
             charNow = line.charAt(index);
             index++;
