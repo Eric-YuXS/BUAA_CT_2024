@@ -235,8 +235,11 @@ public class Lexer {
     }
 
     private void getCharNow() {
-        if (index == line.length()) {
+        if (index > line.length()) {
+            System.err.println("Line ended! Line: " + lineNumber + " Index: " + index);
+        } else if (index == line.length()) {
             charNow = (char) -1;
+            index++;
         } else {
             charNow = line.charAt(index);
             index++;
@@ -244,15 +247,18 @@ public class Lexer {
     }
 
     private void getCharNowThroughLines() throws IOException {
-        if (index == line.length()) {
-            if ((line = in.readLine()) != null) {
+        if (index >= line.length()) {
+            while ((line = in.readLine()) != null) {
                 lineNumber++;
+                if (line.isEmpty()) {
+                    continue;
+                }
                 index = 0;
                 charNow = line.charAt(index);
                 index++;
-            } else {
-                System.err.println("Text ended!");
+                return;
             }
+            System.err.println("Text ended!");
         } else {
             charNow = line.charAt(index);
             index++;
