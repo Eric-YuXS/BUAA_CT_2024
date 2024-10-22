@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -34,6 +35,8 @@ public class Stmt9 extends Stmt {  // Stmt → LVal '=' 'getint''('')'';'
         return sb.append("<Stmt>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    @Override
+    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        lVal.analyze(symbolStack, true);
     }
 }

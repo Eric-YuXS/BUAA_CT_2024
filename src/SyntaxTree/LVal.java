@@ -29,7 +29,7 @@ public class LVal implements SyntaxTreeNode {  // LVal → Ident ['[' Exp ']']
         return sb.append("<LVal>\n").toString();
     }
 
-    public SymbolType analyze(SymbolStack symbolStack) {
+    public SymbolType analyze(SymbolStack symbolStack, boolean isAssign) {
         Symbol symbol = symbolStack.getSymbol(ident.getString());
         if (symbol == null) {
             symbolStack.addError(new Error(ident.getLineNumber(), 'c'));
@@ -39,7 +39,7 @@ public class LVal implements SyntaxTreeNode {  // LVal → Ident ['[' Exp ']']
 //        } else if (exp == null && (symbol.getSymbolType().isArray() || symbol.getSymbolType().isFunc())) {
 //            System.err.println(ident.getString() + "is not a variable!");
 //            return null;
-        } else if (symbol.getSymbolType().isConst()) {
+        } else if (symbol.getSymbolType().isConst() && isAssign) {
             symbolStack.addError(new Error(ident.getLineNumber(), 'h'));
         }
         if (exp != null) {

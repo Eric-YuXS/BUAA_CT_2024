@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -29,6 +30,7 @@ public class MainFuncDef implements SyntaxTreeNode {  // MainFuncDef → 'int' '
     }
 
     public void analyze(SymbolStack symbolStack) {
-        block.analyze(symbolStack, false);
+        block.analyze(symbolStack, FuncSymbol.createMainFuncSymbol(), false, false);
+        block.analyzeReturn(symbolStack);
     }
 }

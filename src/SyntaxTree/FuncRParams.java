@@ -1,7 +1,6 @@
 package SyntaxTree;
 
 import frontend.*;
-import frontend.Error;
 
 import java.util.ArrayList;
 
@@ -25,27 +24,11 @@ public class FuncRParams implements SyntaxTreeNode {  // FuncRParams → Exp { '
         return sb.append("<FuncRParams>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    public ArrayList<SymbolType> analyze(SymbolStack symbolStack) {
+        ArrayList<SymbolType> symbolTypes = new ArrayList<>();
         for (Exp exp : exps) {
-            exp.analyze(symbolStack);
+            symbolTypes.add(exp.analyze(symbolStack));
         }
-    }
-
-    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, Token ident) {
-        ArrayList<Symbol> fParams = funcSymbol.getFParams();
-        int fParamsIndex = 0;
-        for (Exp exp : exps) {
-            SymbolType symbolType = exp.analyze(symbolStack);
-            if (fParamsIndex < fParams.size()) {
-                if (!fParams.get(fParamsIndex).getSymbolType().canAcceptRParam(symbolType)) {
-                    symbolStack.addError(new Error(ident.getLineNumber(), 'e'));
-                }
-            } else {
-                symbolStack.addError(new Error(ident.getLineNumber(), 'd'));
-            }
-        }
-        if (fParamsIndex < fParams.size()) {
-            symbolStack.addError(new Error(ident.getLineNumber(), 'd'));
-        }
+        return symbolTypes;
     }
 }

@@ -1,7 +1,7 @@
 package SyntaxTree;
 
-import frontend.SymbolStack;
-import frontend.Token;
+import frontend.*;
+import frontend.Error;
 
 import java.util.ArrayList;
 
@@ -9,6 +9,7 @@ public class Stmt11 extends Stmt {  // Stmt → 'printf''('StringConst {','Exp}'
     private final Token printf;
     private final Token lParent;
     private final Token stringConst;
+    private final String[] strings;
     private final ArrayList<Exp> exps;
     private final ArrayList<Token> commas;
     private final Token rParent;
@@ -20,6 +21,7 @@ public class Stmt11 extends Stmt {  // Stmt → 'printf''('StringConst {','Exp}'
         this.printf = printf;
         this.lParent = lParent;
         this.stringConst = stringConst;
+        strings = stringConst.getString().split("%d|%c");
         this.exps = exps;
         this.commas = commas;
         this.rParent = rParent;
@@ -43,6 +45,15 @@ public class Stmt11 extends Stmt {  // Stmt → 'printf''('StringConst {','Exp}'
         return sb.append("<Stmt>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    @Override
+    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        if (strings.length - 1 != exps.size()) {
+            symbolStack.addError(new Error(printf.getLineNumber(), 'l'));
+        }
+        for (Exp exp : exps) {
+            if (exp.analyze(symbolStack) == SymbolType.VoidFunc) {
+                System.err.println("Print void!");
+            }
+        }
     }
 }

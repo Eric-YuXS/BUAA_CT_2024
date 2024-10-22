@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 public class InitVal3 extends InitVal {  // InitVal → StringConst
@@ -13,5 +14,9 @@ public class InitVal3 extends InitVal {  // InitVal → StringConst
     @Override
     public String toString() {
         return stringConst + "<InitVal>\n";
+    }
+
+    @Override
+    public void analyze(SymbolStack symbolStack) {
     }
 }

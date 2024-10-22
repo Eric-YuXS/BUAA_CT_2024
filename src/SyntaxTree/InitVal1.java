@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+
 public class InitVal1 extends InitVal {  // InitVal → Exp
     private final Exp exp;
 
@@ -11,5 +13,10 @@ public class InitVal1 extends InitVal {  // InitVal → Exp
     @Override
     public String toString() {
         return exp + "<InitVal>\n";
+    }
+
+    @Override
+    public void analyze(SymbolStack symbolStack) {
+        exp.analyze(symbolStack);
     }
 }

@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.Error;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -22,6 +24,10 @@ public class Stmt6 extends Stmt {  // Stmt → 'break' ';'
         return sb.append("<Stmt>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    @Override
+    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        if (!isLoop) {
+            symbolStack.addError(new Error(breakTk.getLineNumber(), 'm'));
+        }
     }
 }

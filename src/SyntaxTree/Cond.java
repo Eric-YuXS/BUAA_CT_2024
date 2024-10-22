@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
+
 public class Cond implements SyntaxTreeNode {  // Cond → LOrExp
     private final LOrExp lOrExp;
 
@@ -10,5 +12,9 @@ public class Cond implements SyntaxTreeNode {  // Cond → LOrExp
     @Override
     public String toString() {
         return lOrExp + "<Cond>\n";
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        lOrExp.analyze(symbolStack);
     }
 }

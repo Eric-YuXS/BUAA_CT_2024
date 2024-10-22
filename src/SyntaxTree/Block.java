@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import frontend.Error;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -26,13 +28,19 @@ public class Block implements SyntaxTreeNode {  // Block → '{' { BlockItem } '
         return sb.append(rBrace).append("<Block>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack, boolean hasFParams) {
-        if (!hasFParams) {
+    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean hasEnteredScope, boolean isLoop) {
+        if (!hasEnteredScope) {
             symbolStack.enterScope();
         }
         for (BlockItem blockItem : blockItems) {
-            blockItem.analyze(symbolStack);
+            blockItem.analyze(symbolStack, funcSymbol, isLoop);
         }
         symbolStack.exitScope();
+    }
+
+    public void analyzeReturn(SymbolStack symbolStack) {
+        if (blockItems.isEmpty() || !blockItems.get(blockItems.size() - 1).analyzeReturn(symbolStack)) {
+            symbolStack.addError(new Error(rBrace.getLineNumber(), 'g'));
+        }
     }
 }

@@ -17,6 +17,6 @@ public class PrimaryExp2 extends PrimaryExp {  // PrimaryExp → LVal
     }
 
     public SymbolType analyze(SymbolStack symbolStack) {
-        return lVal.analyze(symbolStack);
+        return lVal.analyze(symbolStack, false);
     }
 }

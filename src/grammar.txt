@@ -1,0 +1,44 @@
+CompUnit → {Decl} {FuncDef} MainFuncDef
+	Decl → ConstDecl | VarDecl
+		ConstDecl → 'const' BType ConstDef { ',' ConstDef } ';'-----------------------------------------i
+			BType → 'int' | 'char'
+			ConstDef → Ident [ '[' ConstExp ']' ] '=' ConstInitVal--------------------------------------b k
+				ConstExp → AddExp
+					AddExp → MulExp | AddExp ('+' | '−') MulExp
+						MulExp → UnaryExp | MulExp ('*' | '/' | '%') UnaryExp
+							UnaryExp → PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp------c d e j
+								PrimaryExp → '(' Exp ')' | LVal | Number | Character--------------------j
+									Exp → AddExp
+									LVal → Ident ['[' Exp ']']------------------------------------------c k
+									Number → IntConst
+									Character → CharConst
+								FuncRParams → Exp { ',' Exp }
+								UnaryOp → '+' | '−' | '!'
+				ConstInitVal → ConstExp | '{' [ ConstExp { ',' ConstExp } ] '}' | StringConst
+ 		VarDecl → BType VarDef { ',' VarDef } ';'-------------------------------------------------------i
+			VarDef → Ident [ '[' ConstExp ']' ] | Ident [ '[' ConstExp ']' ] '=' InitVal----------------b k
+				InitVal → Exp | '{' [ Exp { ',' Exp } ] '}' | StringConst
+	FuncDef → FuncType Ident '(' [FuncFParams] ')' Block------------------------------------------------b g j
+		FuncType → 'void' | 'int' | 'char'
+		FuncFParams → FuncFParam { ',' FuncFParam }
+			FuncFParam → BType Ident ['[' ']']----------------------------------------------------------b k
+		Block → '{' { BlockItem } '}'
+			BlockItem → Decl | Stmt
+				Stmt → LVal '=' Exp ';'-----------------------------------------------------------------h i
+                     | [Exp] ';'------------------------------------------------------------------------i
+                     | Block
+                     | 'if' '(' Cond ')' Stmt [ 'else' Stmt ]-------------------------------------------j
+                     | 'for' '(' [ForStmt] ';' [Cond] ';' [ForStmt] ')' Stmt----------------------------(h)
+                     | 'break' ';'----------------------------------------------------------------------i m
+                     | 'continue' ';'-------------------------------------------------------------------i m
+                     | 'return' [Exp] ';'---------------------------------------------------------------f i
+                     | LVal '=' 'getint''('')'';'-------------------------------------------------------h i j
+                     | LVal '=' 'getchar''('')'';'------------------------------------------------------h i j
+                     | 'printf''('StringConst {','Exp}')'';'--------------------------------------------i j l
+					Cond → LOrExp
+						LOrExp → LAndExp | LOrExp '||' LAndExp------------------------------------------a
+							LAndExp → EqExp | LAndExp '&&' EqExp----------------------------------------a
+								EqExp → RelExp | EqExp ('==' | '!=') RelExp
+									RelExp → AddExp | RelExp ('<' | '>' | '<=' | '>=') AddExp
+					ForStmt → LVal '=' Exp--------------------------------------------------------------h
+    MainFuncDef → 'int' 'main' '(' ')' Block------------------------------------------------------------g j

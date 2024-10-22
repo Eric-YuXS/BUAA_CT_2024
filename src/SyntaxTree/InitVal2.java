@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 import java.util.ArrayList;
@@ -30,5 +31,12 @@ public class InitVal2 extends InitVal {  // InitVal → '{' [ Exp { ',' Exp } ] 
             }
         }
         return sb.append(rBrace).append("<InitVal>\n").toString();
+    }
+
+    @Override
+    public void analyze(SymbolStack symbolStack) {
+        for (Exp exp : exps) {
+            exp.analyze(symbolStack);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 
 public class Stmt3 extends Stmt {  // Stmt → Block
@@ -16,7 +17,7 @@ public class Stmt3 extends Stmt {  // Stmt → Block
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack) {
-        block.analyze(symbolStack, false);
+    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        block.analyze(symbolStack, funcSymbol, false, isLoop);
     }
 }

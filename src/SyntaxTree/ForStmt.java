@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 public class ForStmt implements SyntaxTreeNode {  // ForStmt → LVal '=' Exp
@@ -16,5 +17,10 @@ public class ForStmt implements SyntaxTreeNode {  // ForStmt → LVal '=' Exp
     @Override
     public String toString() {
         return lVal.toString() + assign + exp + "<ForStmt>\n";
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        lVal.analyze(symbolStack, true);
+        exp.analyze(symbolStack);
     }
 }

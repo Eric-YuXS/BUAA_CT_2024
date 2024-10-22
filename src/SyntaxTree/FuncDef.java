@@ -3,6 +3,8 @@ package SyntaxTree;
 import frontend.*;
 import frontend.Error;
 
+import java.util.ArrayList;
+
 public class FuncDef implements SyntaxTreeNode {  // FuncDef → FuncType Ident '(' [FuncFParams] ')' Block
     private final FuncType funcType;
     private final Token ident;
@@ -40,10 +42,15 @@ public class FuncDef implements SyntaxTreeNode {  // FuncDef → FuncType Ident 
             symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
         }
         if (funcFParams != null) {
+            symbolStack.enterScope();
             funcSymbol.setFParams(funcFParams.analyze(symbolStack));
-            block.analyze(symbolStack, true);
+            block.analyze(symbolStack, funcSymbol, true, false);
         } else {
-            block.analyze(symbolStack, false);
+            funcSymbol.setFParams(new ArrayList<>());
+            block.analyze(symbolStack, funcSymbol, false, false);
+        }
+        if (symbolType == SymbolType.IntFunc || symbolType == SymbolType.CharFunc) {
+            block.analyzeReturn(symbolStack);
         }
     }
 }

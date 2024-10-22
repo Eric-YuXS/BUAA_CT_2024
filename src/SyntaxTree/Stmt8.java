@@ -1,6 +1,9 @@
 package SyntaxTree;
 
+import frontend.Error;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.Token;
 
 public class Stmt8 extends Stmt {  // Stmt → 'return' [Exp] ';'
@@ -28,6 +31,12 @@ public class Stmt8 extends Stmt {  // Stmt → 'return' [Exp] ';'
         return sb.append("<Stmt>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    @Override
+    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        if (funcSymbol.getSymbolType() == SymbolType.VoidFunc && exp != null) {
+            symbolStack.addError(new Error(returnTk.getLineNumber(), 'f'));
+//        } else if (funcSymbol.getSymbolType() != SymbolType.VoidFunc && exp == null) {
+//            System.err.println("Return without exp in " + funcSymbol);
+        }
     }
 }

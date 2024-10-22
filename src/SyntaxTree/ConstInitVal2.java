@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 import java.util.ArrayList;
@@ -30,5 +31,11 @@ public class ConstInitVal2 extends ConstInitVal {  // ConstInitVal → '{' [ Con
             }
         }
         return sb.append(rBrace).append("<ConstInitVal>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        for (ConstExp constExp : constExps) {
+            constExp.analyze(symbolStack);
+        }
     }
 }

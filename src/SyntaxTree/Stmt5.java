@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -49,7 +50,17 @@ public class Stmt5 extends Stmt {  // Stmt → 'for' '(' [ForStmt] ';' [Cond] ';
         return sb.append(stmt).append("<Stmt>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
-        stmt.analyze(symbolStack);
+    @Override
+    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        if (forStmt1 != null) {
+            forStmt1.analyze(symbolStack);
+        }
+        if (cond != null) {
+            cond.analyze(symbolStack);
+        }
+        if (forStmt2 != null) {
+            forStmt2.analyze(symbolStack);
+        }
+        stmt.analyze(symbolStack, funcSymbol, true);
     }
 }

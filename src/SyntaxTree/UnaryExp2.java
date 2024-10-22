@@ -3,6 +3,8 @@ package SyntaxTree;
 import frontend.*;
 import frontend.Error;
 
+import java.util.ArrayList;
+
 public class UnaryExp2 extends UnaryExp {  // UnaryExp → Ident '(' [FuncRParams] ')'
     private final Token ident;
     private final Token lParent;
@@ -30,14 +32,37 @@ public class UnaryExp2 extends UnaryExp {  // UnaryExp → Ident '(' [FuncRParam
         return sb.append("<UnaryExp>\n").toString();
     }
 
+    @Override
     public SymbolType analyze(SymbolStack symbolStack) {
         Symbol symbol = symbolStack.getSymbol(ident.getString());
         if (symbol == null) {
             symbolStack.addError(new Error(ident.getLineNumber(), 'c'));
-            funcRParams.analyze(symbolStack);
+            if (funcRParams != null) {
+                funcRParams.analyze(symbolStack);
+            }
             return null;
         } else if (symbol instanceof FuncSymbol) {
-            funcRParams.analyze(symbolStack, (FuncSymbol) symbol, ident);
+            ArrayList<Symbol> fParams = ((FuncSymbol) symbol).getFParams();
+            int fParamsIndex = 0;
+            boolean typeErrorFlag = false;
+            boolean numErrorFlag = false;
+            if (funcRParams != null) {
+                for (SymbolType symbolType : funcRParams.analyze(symbolStack)) {
+                    if (fParamsIndex < fParams.size()) {
+                        if (!fParams.get(fParamsIndex++).getSymbolType().canAcceptRParam(symbolType)) {
+                            typeErrorFlag = true;
+                        }
+                    } else {
+                        numErrorFlag = true;
+                    }
+                }
+            }
+            if (numErrorFlag || fParamsIndex < fParams.size()) {
+                symbolStack.addError(new Error(ident.getLineNumber(), 'd'));
+            }
+            if (typeErrorFlag) {
+                symbolStack.addError(new Error(ident.getLineNumber(), 'e'));
+            }
             return symbol.getSymbolType().funcToVarOrVoid();
         } else {
             System.err.println(ident.getString() + "is not a function!");

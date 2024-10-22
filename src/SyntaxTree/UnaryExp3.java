@@ -18,6 +18,7 @@ public class UnaryExp3 extends UnaryExp {  // UnaryExp → UnaryOp UnaryExp
         return unaryOp.toString() + unaryExp + "<UnaryExp>\n";
     }
 
+    @Override
     public SymbolType analyze(SymbolStack symbolStack) {
         SymbolType symbolType = unaryExp.analyze(symbolStack);
         if (symbolType != SymbolType.VoidFunc) {

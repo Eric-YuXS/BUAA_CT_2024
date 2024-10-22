@@ -16,6 +16,7 @@ public class UnaryExp1 extends UnaryExp {  // UnaryExp → PrimaryExp
         return primaryExp + "<UnaryExp>\n";
     }
 
+    @Override
     public SymbolType analyze(SymbolStack symbolStack) {
         return primaryExp.analyze(symbolStack);
     }

@@ -28,6 +28,7 @@ public class Compiler {
             SymbolStack symbolStack = new SymbolStack();
             compUnit.analyze(symbolStack);
             ArrayList<SymbolTable> symbolTables = SymbolTable.getSymbolTables();
+            errors.addAll(symbolStack.getErrors());
 
             if (errors.isEmpty()) {
                 for (SymbolTable symbolTable : symbolTables) {

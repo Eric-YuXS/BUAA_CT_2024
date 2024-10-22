@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -37,10 +38,11 @@ public class Stmt4 extends Stmt {  // Stmt → 'if' '(' Cond ')' Stmt [ 'else' S
         return sb.append("<Stmt>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
-        stmt.analyze(symbolStack);
+    @Override
+    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        stmt.analyze(symbolStack, funcSymbol, isLoop);
         if (elseStmt != null) {
-            elseStmt.analyze(symbolStack);
+            elseStmt.analyze(symbolStack, funcSymbol, isLoop);
         }
     }
 }

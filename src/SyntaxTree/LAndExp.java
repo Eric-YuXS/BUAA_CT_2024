@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import frontend.SymbolStack;
 import frontend.Token;
 
 import java.util.ArrayList;
@@ -22,5 +23,11 @@ public class LAndExp implements SyntaxTreeNode {  // LAndExp → EqExp | LAndExp
             sb.append("<LAndExp>\n").append(operator).append(eqExps.get(eqExpsIndex++));
         }
         return sb.append("<LAndExp>\n").toString();
+    }
+
+    public void analyze(SymbolStack symbolStack) {
+        for (EqExp eqExp : eqExps) {
+            eqExp.analyze(symbolStack);
+        }
     }
 }
