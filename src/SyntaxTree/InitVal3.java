@@ -1,7 +1,11 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.SymbolStack;
 import frontend.Token;
+
+import java.util.ArrayList;
 
 public class InitVal3 extends InitVal {  // InitVal → StringConst
     private final Token stringConst;
@@ -17,6 +21,11 @@ public class InitVal3 extends InitVal {  // InitVal → StringConst
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack) {
+    public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
+        return null;
+    }
+
+    public String getString() {
+        return stringConst.getString();
     }
 }

@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Module;
 import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
@@ -29,8 +31,11 @@ public class MainFuncDef implements SyntaxTreeNode {  // MainFuncDef → 'int' '
         return sb.append(block).append("<MainFuncDef>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
-        block.analyze(symbolStack, FuncSymbol.createMainFuncSymbol(), false, false);
+    public Function analyze(SymbolStack symbolStack, Module module) {
+        Function function = new Function(module, FuncSymbol.createMainFuncSymbol());
+        module.addFunction(function);
+        block.analyze(symbolStack, function, false, null, null);
         block.analyzeReturn(symbolStack);
+        return function;
     }
 }

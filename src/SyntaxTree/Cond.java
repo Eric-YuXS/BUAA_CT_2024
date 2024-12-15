@@ -1,6 +1,10 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instructions.BrConditional;
 import frontend.SymbolStack;
+
+import java.util.ArrayList;
 
 public class Cond implements SyntaxTreeNode {  // Cond → LOrExp
     private final LOrExp lOrExp;
@@ -14,7 +18,7 @@ public class Cond implements SyntaxTreeNode {  // Cond → LOrExp
         return lOrExp + "<Cond>\n";
     }
 
-    public void analyze(SymbolStack symbolStack) {
-        lOrExp.analyze(symbolStack);
+    public ArrayList<BrConditional> analyze(SymbolStack symbolStack, Function function) {
+        return lOrExp.analyze(symbolStack, function);
     }
 }

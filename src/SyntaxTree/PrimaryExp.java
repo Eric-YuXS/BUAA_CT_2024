@@ -1,7 +1,8 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.SymbolStack;
-import frontend.SymbolType;
 
 public class PrimaryExp implements SyntaxTreeNode {  // PrimaryExp → '(' Exp ')' | LVal | Number | Character
     @Override
@@ -9,7 +10,7 @@ public class PrimaryExp implements SyntaxTreeNode {  // PrimaryExp → '(' Exp '
         return "super<PrimaryExp>\n";
     }
 
-    public SymbolType analyze(SymbolStack symbolStack) {
+    public Instruction analyze(SymbolStack symbolStack, Function function) {
         System.err.println("super<PrimaryExp>");
         return null;
     }

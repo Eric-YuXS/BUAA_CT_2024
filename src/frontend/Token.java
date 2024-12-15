@@ -33,6 +33,10 @@ public class Token {
         this.type = type;
     }
 
+    public TokenType getType() {
+        return type;
+    }
+
     public void catChar(char c) {
         string += c;
     }

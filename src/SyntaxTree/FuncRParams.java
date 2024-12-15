@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.*;
 
 import java.util.ArrayList;
@@ -24,11 +26,11 @@ public class FuncRParams implements SyntaxTreeNode {  // FuncRParams → Exp { '
         return sb.append("<FuncRParams>\n").toString();
     }
 
-    public ArrayList<SymbolType> analyze(SymbolStack symbolStack) {
-        ArrayList<SymbolType> symbolTypes = new ArrayList<>();
+    public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
+        ArrayList<Instruction> instructions = new ArrayList<>();
         for (Exp exp : exps) {
-            symbolTypes.add(exp.analyze(symbolStack));
+            instructions.add(exp.analyze(symbolStack, function));
         }
-        return symbolTypes;
+        return instructions;
     }
 }

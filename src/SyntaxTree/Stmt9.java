@@ -1,6 +1,11 @@
 package SyntaxTree;
 
-import frontend.FuncSymbol;
+import LLVMIR.BasicBlock;
+import LLVMIR.Function;
+import LLVMIR.Instruction;
+import LLVMIR.Instructions.CallGetInt;
+import LLVMIR.Instructions.Store;
+import LLVMIR.Instructions.Trunc;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -36,7 +41,14 @@ public class Stmt9 extends Stmt {  // Stmt → LVal '=' 'getint''('')'';'
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
-        lVal.analyze(symbolStack, true);
+    public void analyze(SymbolStack symbolStack, Function function, BasicBlock forCondBasicBlock, BasicBlock forEndBasicBlock) {
+        Instruction callGetIntInstruction = new CallGetInt(function);
+        function.getCurBasicBlock().addInstruction(callGetIntInstruction);
+        Instruction lvalInstruction = lVal.analyze(symbolStack, function, true);
+        if (lvalInstruction.getSymbolType().isI8()) {
+            callGetIntInstruction = new Trunc(function, callGetIntInstruction);
+            function.getCurBasicBlock().addInstruction(callGetIntInstruction);
+        }
+        function.getCurBasicBlock().addInstruction(new Store(function, lvalInstruction, callGetIntInstruction));
     }
 }

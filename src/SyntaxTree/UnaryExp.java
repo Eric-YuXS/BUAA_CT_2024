@@ -1,7 +1,8 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.SymbolStack;
-import frontend.SymbolType;
 
 public class UnaryExp implements SyntaxTreeNode {  // UnaryExp → PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp
     @Override
@@ -9,7 +10,7 @@ public class UnaryExp implements SyntaxTreeNode {  // UnaryExp → PrimaryExp | 
         return "super<UnaryExp>\n";
     }
 
-    public SymbolType analyze(SymbolStack symbolStack) {
+    public Instruction analyze(SymbolStack symbolStack, Function function) {
         System.err.println("super<UnaryExp>");
         return null;
     }

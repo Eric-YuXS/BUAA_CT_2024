@@ -1,7 +1,11 @@
 package SyntaxTree;
 
+import LLVMIR.BasicBlock;
+import LLVMIR.Function;
+import LLVMIR.Instruction;
+import LLVMIR.Instructions.Ret;
+import LLVMIR.Instructions.Trunc;
 import frontend.Error;
-import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.SymbolType;
 import frontend.Token;
@@ -32,11 +36,21 @@ public class Stmt8 extends Stmt {  // Stmt → 'return' [Exp] ';'
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
-        if (funcSymbol.getSymbolType() == SymbolType.VoidFunc && exp != null) {
+    public void analyze(SymbolStack symbolStack, Function function, BasicBlock forCondBasicBlock, BasicBlock forEndBasicBlock) {
+        if (function.getFuncSymbol().getSymbolType() == SymbolType.VoidFunc && exp != null) {
             symbolStack.addError(new Error(returnTk.getLineNumber(), 'f'));
 //        } else if (funcSymbol.getSymbolType() != SymbolType.VoidFunc && exp == null) {
 //            System.err.println("Return without exp in " + funcSymbol);
+        }
+        if (exp != null) {
+            Instruction expInstruction = exp.analyze(symbolStack, function);
+            if (function.getFuncSymbol().getSymbolType() == SymbolType.CharFunc) {
+                expInstruction = new Trunc(function, expInstruction);
+                function.getCurBasicBlock().addInstruction(expInstruction);
+            }
+            function.getCurBasicBlock().addInstruction(new Ret(function, expInstruction));
+        } else {
+            function.getCurBasicBlock().addInstruction(new Ret(function, null));
         }
     }
 }

@@ -1,7 +1,9 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
+import LLVMIR.Instructions.Load;
 import frontend.SymbolStack;
-import frontend.SymbolType;
 
 public class PrimaryExp2 extends PrimaryExp {  // PrimaryExp → LVal
     private final LVal lVal;
@@ -16,7 +18,14 @@ public class PrimaryExp2 extends PrimaryExp {  // PrimaryExp → LVal
         return lVal + "<PrimaryExp>\n";
     }
 
-    public SymbolType analyze(SymbolStack symbolStack) {
-        return lVal.analyze(symbolStack, false);
+    public Instruction analyze(SymbolStack symbolStack, Function function) {
+        Instruction pointerInstruction = lVal.analyze(symbolStack, function, false);
+        if (pointerInstruction.getSymbolType().isVar()) {
+            Load loadInstruction = new Load(function, pointerInstruction.getSymbolType(), pointerInstruction);
+            function.getCurBasicBlock().addInstruction(loadInstruction);
+            return loadInstruction;
+        } else {
+            return pointerInstruction;
+        }
     }
 }

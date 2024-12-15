@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instructions.BrConditional;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -25,9 +27,18 @@ public class LOrExp implements SyntaxTreeNode {  // LOrExp → LAndExp | LOrExp 
         return sb.append("<LOrExp>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
-        for (LAndExp lAndExp : lAndExps) {
-            lAndExp.analyze(symbolStack);
+    public ArrayList<BrConditional> analyze(SymbolStack symbolStack, Function function) {
+        ArrayList<BrConditional> lAndBrInstructions = lAndExps.get(0).analyze(symbolStack, function);
+        ArrayList<BrConditional> lOrBrInstructions = new ArrayList<>();
+        for (int i = 0; i < operators.size(); i++) {
+            function.enterNextBasicBlock();
+            for (BrConditional brConditional : lAndBrInstructions) {
+                brConditional.setBrBasicBlock2(function.getCurBasicBlock());
+            }
+            lOrBrInstructions.add(lAndBrInstructions.get(lAndBrInstructions.size() - 1));
+            lAndBrInstructions = lAndExps.get(i + 1).analyze(symbolStack, function);
         }
+        lOrBrInstructions.addAll(lAndBrInstructions);
+        return lOrBrInstructions;
     }
 }

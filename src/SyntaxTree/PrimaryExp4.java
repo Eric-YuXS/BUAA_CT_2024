@@ -1,5 +1,8 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
+import LLVMIR.Instructions.Num;
 import frontend.SymbolStack;
 import frontend.SymbolType;
 
@@ -16,7 +19,7 @@ public class PrimaryExp4 extends PrimaryExp {  // PrimaryExp → Character
         return character + "<PrimaryExp>\n";
     }
 
-    public SymbolType analyze(SymbolStack symbolStack) {
-        return SymbolType.Char;
+    public Instruction analyze(SymbolStack symbolStack, Function function) {
+        return new Num(function, SymbolType.Char, character.getNum());
     }
 }

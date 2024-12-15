@@ -1,6 +1,11 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.SymbolStack;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class ConstInitVal1 extends ConstInitVal {  // ConstInitVal → ConstExp
     private final ConstExp constExp;
@@ -16,7 +21,7 @@ public class ConstInitVal1 extends ConstInitVal {  // ConstInitVal → ConstExp
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack) {
-        constExp.analyze(symbolStack);
+    public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
+        return new ArrayList<>(Collections.singletonList(constExp.analyze(symbolStack, function)));
     }
 }

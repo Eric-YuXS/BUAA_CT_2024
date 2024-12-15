@@ -1,5 +1,9 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
+import LLVMIR.Instructions.Store;
+import LLVMIR.Instructions.Trunc;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -19,8 +23,13 @@ public class ForStmt implements SyntaxTreeNode {  // ForStmt → LVal '=' Exp
         return lVal.toString() + assign + exp + "<ForStmt>\n";
     }
 
-    public void analyze(SymbolStack symbolStack) {
-        lVal.analyze(symbolStack, true);
-        exp.analyze(symbolStack);
+    public void analyze(SymbolStack symbolStack, Function function) {
+        Instruction lvalInstruction = lVal.analyze(symbolStack, function, true);
+        Instruction expInstruction = exp.analyze(symbolStack, function);
+        if (lvalInstruction.getSymbolType().isI8()) {
+            expInstruction = new Trunc(function, expInstruction);
+            function.getCurBasicBlock().addInstruction(expInstruction);
+        }
+        function.getCurBasicBlock().addInstruction(new Store(function, lvalInstruction, expInstruction));
     }
 }

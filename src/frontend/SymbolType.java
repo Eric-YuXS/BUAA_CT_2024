@@ -1,6 +1,7 @@
 package frontend;
 
 public enum SymbolType {
+    Bool,
     Int, IntArray, ConstInt, ConstIntArray,
     Char, CharArray, ConstChar, ConstCharArray,
     VoidFunc, IntFunc, CharFunc;
@@ -53,11 +54,15 @@ public enum SymbolType {
         }
     }
 
-    public SymbolType arrayToVar() {
+    public SymbolType arrayOrVarToVar() {
         switch (this) {
+            case Int:
+            case ConstInt:
             case IntArray:
             case ConstIntArray:
                 return Int;
+            case Char:
+            case ConstChar:
             case CharArray:
             case ConstCharArray:
                 return Char;
@@ -146,13 +151,64 @@ public enum SymbolType {
         switch (this) {
             case Int:
             case Char:
-                return symbolType.isVar();
+                return symbolType.isVar() || symbolType == IntFunc || symbolType == CharFunc;
             case IntArray:
                 return symbolType == IntArray || symbolType == ConstIntArray;
             case CharArray:
                 return symbolType == CharArray || symbolType == ConstCharArray;
             default:
                 System.err.println("Invalid type: " + this);
+                return false;
+        }
+    }
+
+    public String toValueString() {
+        switch (this) {
+            case Int:
+            case ConstInt:
+            case IntFunc:
+                return "i32";
+            case Char:
+            case ConstChar:
+            case CharFunc:
+                return "i8";
+            case IntArray:
+            case ConstIntArray:
+                return "i32*";
+            case CharArray:
+            case ConstCharArray:
+                return "i8*";
+            case VoidFunc:
+                return "void";
+            case Bool:
+                return "i1";
+            default:
+                return null;
+        }
+    }
+
+    public boolean isI1() {
+        return this == SymbolType.Bool;
+    }
+
+    public boolean isI8() {
+        switch (this) {
+            case Char:
+            case ConstChar:
+            case CharFunc:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isI32() {
+        switch (this) {
+            case Int:
+            case ConstInt:
+            case IntFunc:
+                return true;
+            default:
                 return false;
         }
     }

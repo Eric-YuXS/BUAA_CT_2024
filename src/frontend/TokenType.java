@@ -140,4 +140,24 @@ public enum TokenType {
                 return null;
         }
     }
+
+    public String getIcmpInstruction() {
+        switch (this) {
+            case LSS:
+                return "slt";
+            case LEQ:
+                return "sle";
+            case GRE:
+                return "sgt";
+            case GEQ:
+                return "sge";
+            case EQL:
+                return "eq";
+            case NEQ:
+                return "ne";
+            default:
+                System.out.println("Token type cannot be used in icmp: " + this);
+                return null;
+        }
+    }
 }

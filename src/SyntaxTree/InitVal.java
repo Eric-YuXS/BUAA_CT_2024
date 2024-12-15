@@ -1,6 +1,10 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.SymbolStack;
+
+import java.util.ArrayList;
 
 public class InitVal implements SyntaxTreeNode {  // InitVal → Exp | '{' [ Exp { ',' Exp } ] '}' | StringConst
     @Override
@@ -8,7 +12,8 @@ public class InitVal implements SyntaxTreeNode {  // InitVal → Exp | '{' [ Exp
         return "super<InitVal>\n";
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
         System.err.println("super<InitVal>");
+        return null;
     }
 }

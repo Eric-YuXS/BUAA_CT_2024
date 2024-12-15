@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.SymbolStack;
 
 public class ConstExp implements SyntaxTreeNode {  // ConstExp → AddExp
@@ -14,7 +16,7 @@ public class ConstExp implements SyntaxTreeNode {  // ConstExp → AddExp
         return addExp + "<ConstExp>\n";
     }
 
-    public void analyze(SymbolStack symbolStack) {
-        addExp.analyze(symbolStack);
+    public Instruction analyze(SymbolStack symbolStack, Function function) {
+        return addExp.analyze(symbolStack, function);
     }
 }

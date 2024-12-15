@@ -1,3 +1,4 @@
+import LLVMIR.Module;
 import SyntaxTree.CompUnit;
 import frontend.*;
 import frontend.Error;
@@ -13,7 +14,7 @@ public class Compiler {
     public static void main(String[] args) {
         try {
             BufferedReader in = new BufferedReader(new FileReader("testfile.txt"));
-            BufferedWriter out = new BufferedWriter(new FileWriter("symbol.txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter("llvm_ir.txt"));
             BufferedWriter errorOut = new BufferedWriter(new FileWriter("error.txt"));
 
             Lexer lexer = new Lexer(in);
@@ -26,14 +27,12 @@ public class Compiler {
             errors.addAll(parser.getErrors());
 
             SymbolStack symbolStack = new SymbolStack();
-            compUnit.analyze(symbolStack);
+            Module module = compUnit.analyze(symbolStack);
             ArrayList<SymbolTable> symbolTables = SymbolTable.getSymbolTables();
             errors.addAll(symbolStack.getErrors());
 
             if (errors.isEmpty()) {
-                for (SymbolTable symbolTable : symbolTables) {
-                    out.write(symbolTable.toString());
-                }
+                out.write(module.toString());
             } else {
                 Collections.sort(errors);
                 for (Error error : errors) {

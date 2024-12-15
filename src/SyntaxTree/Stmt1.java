@@ -1,6 +1,10 @@
 package SyntaxTree;
 
-import frontend.FuncSymbol;
+import LLVMIR.BasicBlock;
+import LLVMIR.Function;
+import LLVMIR.Instruction;
+import LLVMIR.Instructions.Store;
+import LLVMIR.Instructions.Trunc;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -29,8 +33,13 @@ public class Stmt1 extends Stmt {  // Stmt → LVal '=' Exp ';'
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
-        lVal.analyze(symbolStack, true);
-        exp.analyze(symbolStack);
+    public void analyze(SymbolStack symbolStack, Function function, BasicBlock forCondBasicBlock, BasicBlock forEndBasicBlock) {
+        Instruction lvalInstruction = lVal.analyze(symbolStack, function, true);
+        Instruction expInstruction = exp.analyze(symbolStack, function);
+        if (lvalInstruction.getSymbolType().isI8()) {
+            expInstruction = new Trunc(function, expInstruction);
+            function.getCurBasicBlock().addInstruction(expInstruction);
+        }
+        function.getCurBasicBlock().addInstruction(new Store(function, lvalInstruction, expInstruction));
     }
 }

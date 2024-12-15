@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import LLVMIR.Module;
 import frontend.SymbolStack;
 import frontend.SymbolType;
 import frontend.Token;
@@ -35,10 +36,10 @@ public class ConstDecl implements SyntaxTreeNode {  // ConstDecl → 'const' BTy
         return sb.append("<ConstDecl>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    public void analyze(SymbolStack symbolStack, Module module) {
         SymbolType symbolType = bType.getSymbolType().varToConst();
         for (ConstDef constDef : constDefs) {
-            constDef.analyze(symbolStack, symbolType);
+            constDef.analyze(symbolStack, module, symbolType);
         }
     }
 }

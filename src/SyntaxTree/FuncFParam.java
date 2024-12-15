@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instructions.*;
 import frontend.Error;
 import frontend.Symbol;
 import frontend.SymbolStack;
@@ -32,7 +34,7 @@ public class FuncFParam implements SyntaxTreeNode {  // FuncFParam → BType Ide
         return sb.append("<FuncFParam>\n").toString();
     }
 
-    public Symbol analyze(SymbolStack symbolStack) {
+    public Symbol analyze(SymbolStack symbolStack, Function function) {
         SymbolType symbolType = bType.getSymbolType();
         if (lBrack != null) {
             symbolType = symbolType.varToArray();
@@ -40,6 +42,20 @@ public class FuncFParam implements SyntaxTreeNode {  // FuncFParam → BType Ide
         Symbol symbol = new Symbol(symbolType, ident.getString());
         if (!symbolStack.addSymbol(symbol)) {
             symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
+        }
+        if (lBrack == null) {
+            ParamVar paramVarInstruction = new ParamVar(function, symbol);
+            function.addParamInstruction(paramVarInstruction);
+
+            Var varInstruction = new Var(function, symbolType);
+            function.getCurBasicBlock().addInstruction(varInstruction);
+            symbol.setInstruction(varInstruction);
+
+            function.getCurBasicBlock().addInstruction(new Store(function, varInstruction, paramVarInstruction));
+        } else {
+            ParamArray paramArrayInstruction = new ParamArray(function, symbol);
+            function.addParamInstruction(paramArrayInstruction);
+            symbol.setInstruction(paramArrayInstruction);
         }
         return symbol;
     }

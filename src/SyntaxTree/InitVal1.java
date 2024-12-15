@@ -1,6 +1,11 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.SymbolStack;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class InitVal1 extends InitVal {  // InitVal → Exp
     private final Exp exp;
@@ -16,7 +21,7 @@ public class InitVal1 extends InitVal {  // InitVal → Exp
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack) {
-        exp.analyze(symbolStack);
+    public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
+        return new ArrayList<>(Collections.singletonList(exp.analyze(symbolStack, function)));
     }
 }

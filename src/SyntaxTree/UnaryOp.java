@@ -9,6 +9,10 @@ public class UnaryOp implements SyntaxTreeNode {  // UnaryOp → '+' | '−' | '
         this.unaryOp = unaryOp;
     }
 
+    public Token getUnaryOp() {
+        return unaryOp;
+    }
+
     @Override
     public String toString() {
         return unaryOp + "<UnaryOp>\n";

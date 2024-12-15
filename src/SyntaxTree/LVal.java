@@ -1,5 +1,8 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
+import LLVMIR.Instructions.*;
 import frontend.*;
 import frontend.Error;
 
@@ -29,7 +32,7 @@ public class LVal implements SyntaxTreeNode {  // LVal → Ident ['[' Exp ']']
         return sb.append("<LVal>\n").toString();
     }
 
-    public SymbolType analyze(SymbolStack symbolStack, boolean isAssign) {
+    public Instruction analyze(SymbolStack symbolStack, Function function, boolean isAssign) {
         Symbol symbol = symbolStack.getSymbol(ident.getString());
         if (symbol == null) {
             symbolStack.addError(new Error(ident.getLineNumber(), 'c'));
@@ -43,10 +46,25 @@ public class LVal implements SyntaxTreeNode {  // LVal → Ident ['[' Exp ']']
             symbolStack.addError(new Error(ident.getLineNumber(), 'h'));
         }
         if (exp != null) {
-            exp.analyze(symbolStack);
-            return symbol != null ? symbol.getSymbolType().arrayToVar() : null;
+            Instruction indexInstruction = exp.analyze(symbolStack, function);
+            Instruction getElementPointerInstruction = new GetElementPointer(function,
+                    symbol.getSymbolType(), symbol.getInstruction(), indexInstruction,
+                    symbol.getInstruction() instanceof Alloca ? ((Alloca) symbol.getInstruction()).getSize() :
+                            symbol.getInstruction() instanceof AllocaGlobal ? ((AllocaGlobal) symbol.getInstruction()).getSize() :
+                                    symbol.getInstruction() instanceof AllocaGlobalString ?
+                                            ((AllocaGlobalString) symbol.getInstruction()).getSize() : -1);
+            function.getCurBasicBlock().addInstruction(getElementPointerInstruction);
+            return getElementPointerInstruction;
+        } else if (symbol.getSymbolType().isArray()) {
+            Instruction getElementPointerInstruction = new GetArrayPointer(function, symbol.getSymbolType(), symbol.getInstruction(),
+                    symbol.getInstruction() instanceof Alloca ? ((Alloca) symbol.getInstruction()).getSize() :
+                            symbol.getInstruction() instanceof AllocaGlobal ? ((AllocaGlobal) symbol.getInstruction()).getSize() :
+                                    symbol.getInstruction() instanceof AllocaGlobalString ?
+                                            ((AllocaGlobalString) symbol.getInstruction()).getSize() : -1);
+            function.getCurBasicBlock().addInstruction(getElementPointerInstruction);
+            return getElementPointerInstruction;
         } else {
-            return symbol != null ? symbol.getSymbolType() : null;
+            return symbol.getInstruction();
         }
     }
 }

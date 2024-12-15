@@ -1,7 +1,9 @@
 package SyntaxTree;
 
+import LLVMIR.BasicBlock;
+import LLVMIR.Function;
+import LLVMIR.Instructions.BrUnconditional;
 import frontend.Error;
-import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -25,9 +27,12 @@ public class Stmt7 extends Stmt {  // Stmt → 'continue' ';'
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
-        if (!isLoop) {
+    public void analyze(SymbolStack symbolStack, Function function, BasicBlock forCondBasicBlock, BasicBlock forEndBasicBlock) {
+        if (forCondBasicBlock == null || forEndBasicBlock == null) {
             symbolStack.addError(new Error(continueTk.getLineNumber(), 'm'));
+        } else {
+            function.getCurBasicBlock().addInstruction(new BrUnconditional(function.getCurBasicBlock(), forCondBasicBlock));
+            function.enterNextBasicBlock();
         }
     }
 }

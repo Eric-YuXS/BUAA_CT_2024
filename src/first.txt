@@ -1,0 +1,112 @@
+FIRST(CompUnit) = FIRST(Decl) + FIRST(MainFuncDef)
+                = {'const', 'int', 'char'}
+
+FIRST(Decl) = FIRST(ConstDecl) + FIRST(VarDecl)
+            = {'const'} + {'int', 'char'}
+            = {'const', 'int', 'char'}
+
+FIRST(ConstDecl) = {'const'}
+
+FIRST(BType) = {'int', 'char'}
+
+FIRST(ConstDef) = {IDENTF}
+
+FIRST(ConstInitVal) = FIRST(ConstExp) + {'{'} + FIRST(StringConst)
+                    = FIRST(ConstExp) + {'{'} + {STRCON}
+                    = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'} + {'{'}
+
+FIRST(VarDecl) = FIRST(BType)
+               = {'int', 'char'}
+
+FIRST(VarDef) = {IDENTF}
+
+FIRST(InitVal) = FIRST(Exp) + {'{'} + {STRCON}
+               = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'} + {'{'}
+
+FIRST(FuncDef) = FIRST(FuncType)
+               = {'void', 'int', 'char'}
+
+FIRST(MainFuncDef) = {'int'}
+
+FIRST(FuncType) = {'void', 'int', 'char'}
+
+FIRST(FuncFParams) = FIRST(FuncFParam)
+                   = {'int', 'char'}
+
+FIRST(FuncFParam) = FIRST(BType)
+                  = {'int', 'char'}
+
+FIRST(Block) = {'{'}
+
+FIRST(BlockItem) = FIRST(Decl) + FIRST(Stmt)
+                 = = {'const', 'int', 'char'} + FIRST(Stmt)
+
+FIRST(Stmt) = FIRST(AssignStmt) + FIRST(ExpStmt) + FIRST(Block) + FIRST(IfStmt) + FIRST(For) + FIRST(BreakStmt) + FIRST(ContinueStmt) + FIRST(ReturnStmt) + FIRST(GetStmt) + FIRST(PrintStmt)
+            = FIRST(LVal) + FIRST(Exp) + {';'} + {'{'} + {'if'} + {'for'} + {'break'} + {'continue'} + {'return'}  + {'printf'}
+
+FIRST(AssignStmt) = FIRST(LVal)
+                  = {IDENTF}
+
+FIRST(ExpStmt) = FIRST(Exp) + {';'}
+
+FIRST(IfStmt) = {'if'}
+
+FIRST(For) = {'for'}
+
+FIRST(BreakStmt) = {'break'}
+
+FIRST(ContinueStmt) = {'continue'}
+
+FIRST(ReturnStmt) = {'return'}
+
+FIRST(GetStmt) = FIRST(LVal)
+
+FIRST(PrintStmt) = {'printf'}
+
+FIRST(ForStmt) = FIRST(LVal)
+
+FIRST(Exp) = FIRST(AddExp)
+           = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(Cond) = FIRST(LOrExp)
+            = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(LVal) = {IDENTF}
+
+FIRST(PrimaryExp) = {'('} + FIRST(LVal) + FIRST(Numbers) + FIRST(Character)
+                  = {'('} + {IDENTF} + {INTCON} + {STRCON}
+
+FIRST(Number) = {INTCON}
+
+FIRST(Character) = {STRCON}
+
+FIRST(UnaryExp) = FIRST(PrimaryExp) + {IDENTF} + {UnaryOp}
+                = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(UnaryOp) = {'+', '-', '!'}
+
+FIRST(FuncRParams) = FIRST(Exp)
+                   = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(MulExp) = FIRST(UnaryExp)
+              = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(AddExp) = FIRST(MulExp)
+              = FIRST(UnaryExp)
+              = FIRST(PrimaryExp) + {IDENTF} + {UnaryOp}
+              = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(RelExp) = FIRST(AddExp)
+              = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(EqExp) = FIRST(RelExp)
+             = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(LAndExp) = FIRST(EqExp)
+               = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(LOrExp) = FIRST(LAndExp)
+              = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}
+
+FIRST(ConstExp) = FIRST(AddExp)
+                = {'('} + {IDENTF} + {INTCON} + {STRCON} + {'+', '-', '!'}

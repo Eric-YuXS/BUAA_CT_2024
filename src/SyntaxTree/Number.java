@@ -9,6 +9,10 @@ public class Number implements SyntaxTreeNode {  // Number → IntConst
         this.intConst = intConst;
     }
 
+    public int getNum() {
+        return Integer.parseInt(intConst.getString());
+    }
+
     @Override
     public String toString() {
         return intConst + "<Number>\n";

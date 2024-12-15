@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import LLVMIR.Module;
 import frontend.SymbolStack;
 import frontend.SymbolType;
 import frontend.Token;
@@ -33,10 +34,10 @@ public class VarDecl implements SyntaxTreeNode {  // VarDecl → BType VarDef { 
         return sb.append("<VarDecl>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    public void analyze(SymbolStack symbolStack, Module module) {
         SymbolType symbolType = bType.getSymbolType();
         for (VarDef varDef : varDefs) {
-            varDef.analyze(symbolStack, symbolType);
+            varDef.analyze(symbolStack, module, symbolType);
         }
     }
 }

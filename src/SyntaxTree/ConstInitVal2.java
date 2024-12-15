@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -33,9 +35,11 @@ public class ConstInitVal2 extends ConstInitVal {  // ConstInitVal → '{' [ Con
         return sb.append(rBrace).append("<ConstInitVal>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
+        ArrayList<Instruction> instructions = new ArrayList<>();
         for (ConstExp constExp : constExps) {
-            constExp.analyze(symbolStack);
+            instructions.add(constExp.analyze(symbolStack, function));
         }
+        return instructions;
     }
 }

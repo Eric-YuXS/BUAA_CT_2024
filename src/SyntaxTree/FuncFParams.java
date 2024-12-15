@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
 import frontend.Symbol;
 import frontend.SymbolStack;
 import frontend.Token;
@@ -26,10 +27,10 @@ public class FuncFParams implements SyntaxTreeNode {  // FuncFParams → FuncFPa
         return sb.append("<FuncFParams>\n").toString();
     }
 
-    public ArrayList<Symbol> analyze(SymbolStack symbolStack) {
+    public ArrayList<Symbol> analyze(SymbolStack symbolStack, Function function) {
         ArrayList<Symbol> symbols = new ArrayList<>();
         for (FuncFParam funcFParam : funcFParams) {
-            symbols.add(funcFParam.analyze(symbolStack));
+            symbols.add(funcFParam.analyze(symbolStack, function));
         }
         return symbols;
     }

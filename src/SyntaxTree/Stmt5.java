@@ -1,8 +1,13 @@
 package SyntaxTree;
 
-import frontend.FuncSymbol;
+import LLVMIR.BasicBlock;
+import LLVMIR.Function;
+import LLVMIR.Instructions.BrConditional;
+import LLVMIR.Instructions.BrUnconditional;
 import frontend.SymbolStack;
 import frontend.Token;
+
+import java.util.ArrayList;
 
 public class Stmt5 extends Stmt {  // Stmt → 'for' '(' [ForStmt] ';' [Cond] ';' [ForStmt] ')' Stmt
     private final Token forTk;
@@ -51,16 +56,52 @@ public class Stmt5 extends Stmt {  // Stmt → 'for' '(' [ForStmt] ';' [Cond] ';
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+    public void analyze(SymbolStack symbolStack, Function function, BasicBlock forCondBasicBlock, BasicBlock forEndBasicBlock) {
         if (forStmt1 != null) {
-            forStmt1.analyze(symbolStack);
+            forStmt1.analyze(symbolStack, function);
         }
+        BrUnconditional brInstruction = new BrUnconditional(function.getCurBasicBlock(), null);
+        function.getCurBasicBlock().addInstruction(brInstruction);
+        function.enterNextBasicBlock();
+        brInstruction.setBrBasicBlock(function.getCurBasicBlock());
         if (cond != null) {
-            cond.analyze(symbolStack);
+            ArrayList<BrConditional> condBrInstructions = cond.analyze(symbolStack, function);
+            BasicBlock condBasicBlock = function.getCurBasicBlock();
+            function.enterNextBasicBlock();
+            BasicBlock forBasicBlock = function.getCurBasicBlock();
+            BasicBlock endForBasicBlock = new BasicBlock(null);
+            BasicBlock afterForBasicBlock = new BasicBlock(null);
+            stmt.analyze(symbolStack, function, endForBasicBlock, afterForBasicBlock);
+
+            brInstruction = new BrUnconditional(function.getCurBasicBlock(), null);
+            function.getCurBasicBlock().addInstruction(brInstruction);
+            function.enterNextBasicBlock(endForBasicBlock);
+            brInstruction.setBrBasicBlock(function.getCurBasicBlock());
+            if (forStmt2 != null) {
+                forStmt2.analyze(symbolStack, function);
+            }
+            function.getCurBasicBlock().addInstruction(new BrUnconditional(function.getCurBasicBlock(), condBasicBlock));
+
+            function.enterNextBasicBlock(afterForBasicBlock);
+            for (BrConditional condBrInstruction : condBrInstructions) {
+                condBrInstruction.setBrBasicBlock1(forBasicBlock);
+                condBrInstruction.setBrBasicBlock2(function.getCurBasicBlock());
+            }
+        } else {
+            BasicBlock forBasicBlock = function.getCurBasicBlock();
+            BasicBlock endForBasicBlock = new BasicBlock(null);
+            BasicBlock afterForBasicBlock = new BasicBlock(null);
+            stmt.analyze(symbolStack, function, endForBasicBlock, afterForBasicBlock);
+
+            brInstruction = new BrUnconditional(function.getCurBasicBlock(), null);
+            function.getCurBasicBlock().addInstruction(brInstruction);
+            function.enterNextBasicBlock(endForBasicBlock);
+            brInstruction.setBrBasicBlock(function.getCurBasicBlock());
+            if (forStmt2 != null) {
+                forStmt2.analyze(symbolStack, function);
+            }
+            function.getCurBasicBlock().addInstruction(new BrUnconditional(function.getCurBasicBlock(), forBasicBlock));
+            function.enterNextBasicBlock(afterForBasicBlock);
         }
-        if (forStmt2 != null) {
-            forStmt2.analyze(symbolStack);
-        }
-        stmt.analyze(symbolStack, funcSymbol, true);
     }
 }

@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import LLVMIR.Module;
 import frontend.SymbolStack;
 
 public class Decl2 extends Decl {  // Decl → VarDecl
@@ -16,7 +17,7 @@ public class Decl2 extends Decl {  // Decl → VarDecl
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack) {
-        varDecl.analyze(symbolStack);
+    public void analyze(SymbolStack symbolStack, Module module) {
+        varDecl.analyze(symbolStack, module);
     }
 }

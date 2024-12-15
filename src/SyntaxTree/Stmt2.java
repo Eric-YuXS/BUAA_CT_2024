@@ -1,6 +1,7 @@
 package SyntaxTree;
 
-import frontend.FuncSymbol;
+import LLVMIR.BasicBlock;
+import LLVMIR.Function;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -27,9 +28,9 @@ public class Stmt2 extends Stmt {  // Stmt → [Exp] ';'
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+    public void analyze(SymbolStack symbolStack, Function function, BasicBlock forCondBasicBlock, BasicBlock forEndBasicBlock) {
         if (exp != null) {
-            exp.analyze(symbolStack);
+            exp.analyze(symbolStack, function);
         }
     }
 }

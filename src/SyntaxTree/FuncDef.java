@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Module;
 import frontend.*;
 import frontend.Error;
 
@@ -35,22 +37,28 @@ public class FuncDef implements SyntaxTreeNode {  // FuncDef → FuncType Ident 
         return sb.append(block).append("<FuncDef>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    public Function analyze(SymbolStack symbolStack, Module module) {
         SymbolType symbolType = funcType.getSymbolType();
         FuncSymbol funcSymbol = new FuncSymbol(symbolType, ident.getString());
+        Function function = new Function(module, funcSymbol);
+        funcSymbol.setFunction(function);
+        module.addFunction(function);
         if (!symbolStack.addSymbol(funcSymbol)) {
             symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
         }
         if (funcFParams != null) {
             symbolStack.enterScope();
-            funcSymbol.setFParams(funcFParams.analyze(symbolStack));
-            block.analyze(symbolStack, funcSymbol, true, false);
+            funcSymbol.setFParams(funcFParams.analyze(symbolStack, function));
+            block.analyze(symbolStack, function, true, null, null);
         } else {
             funcSymbol.setFParams(new ArrayList<>());
-            block.analyze(symbolStack, funcSymbol, false, false);
+            block.analyze(symbolStack, function, false, null, null);
         }
         if (symbolType == SymbolType.IntFunc || symbolType == SymbolType.CharFunc) {
             block.analyzeReturn(symbolStack);
+        } else {
+            block.analyzeVoidReturn(function);
         }
+        return function;
     }
 }

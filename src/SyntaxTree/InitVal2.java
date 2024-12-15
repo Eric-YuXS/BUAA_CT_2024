@@ -1,5 +1,7 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -34,9 +36,11 @@ public class InitVal2 extends InitVal {  // InitVal → '{' [ Exp { ',' Exp } ] 
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack) {
+    public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
+        ArrayList<Instruction> instructions = new ArrayList<>();
         for (Exp exp : exps) {
-            exp.analyze(symbolStack);
+            instructions.add(exp.analyze(symbolStack, function));
         }
+        return instructions;
     }
 }

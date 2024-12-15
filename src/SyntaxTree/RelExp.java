@@ -1,5 +1,9 @@
 package SyntaxTree;
 
+import LLVMIR.Function;
+import LLVMIR.Instruction;
+import LLVMIR.Instructions.Icmp;
+import LLVMIR.Instructions.Zext;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -25,9 +29,18 @@ public class RelExp implements SyntaxTreeNode {  // RelExp → AddExp | RelExp (
         return sb.append("<RelExp>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
-        for (AddExp addExp : addExps) {
-            addExp.analyze(symbolStack);
+    public Instruction analyze(SymbolStack symbolStack, Function function) {
+        Instruction relInstruction = addExps.get(0).analyze(symbolStack, function);
+        for (int i = 0; i < operators.size(); i++) {
+            AddExp addExp = addExps.get(i + 1);
+            Instruction addInstruction = addExp.analyze(symbolStack, function);
+            relInstruction = new Icmp(function, operators.get(i).getType(), relInstruction, addInstruction);
+            function.getCurBasicBlock().addInstruction(relInstruction);
+            if (i < operators.size() - 1) {
+                relInstruction = new Zext(function, relInstruction);
+                function.getCurBasicBlock().addInstruction(relInstruction);
+            }
         }
+        return relInstruction;
     }
 }

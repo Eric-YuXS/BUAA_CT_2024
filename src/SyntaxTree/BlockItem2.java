@@ -1,6 +1,8 @@
 package SyntaxTree;
 
-import frontend.FuncSymbol;
+import LLVMIR.BasicBlock;
+import LLVMIR.Function;
+import LLVMIR.Instructions.Ret;
 import frontend.SymbolStack;
 
 public class BlockItem2 extends BlockItem {  // BlockItem → Stmt
@@ -17,12 +19,18 @@ public class BlockItem2 extends BlockItem {  // BlockItem → Stmt
     }
 
     @Override
-    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
-        stmt.analyze(symbolStack, funcSymbol, isLoop);
+    public void analyze(SymbolStack symbolStack, Function function, BasicBlock forCondBasicBlock, BasicBlock forEndBasicBlock) {
+        stmt.analyze(symbolStack, function, forCondBasicBlock, forEndBasicBlock);
     }
 
     @Override
     public boolean analyzeReturn(SymbolStack symbolStack) {
         return stmt instanceof Stmt8;
+    }
+
+    public void analyzeVoidReturn(Function function) {
+        if (!(stmt instanceof Stmt8)) {
+            function.getCurBasicBlock().addInstruction(new Ret(function, null));
+        }
     }
 }

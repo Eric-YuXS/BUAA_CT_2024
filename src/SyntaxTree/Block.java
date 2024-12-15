@@ -1,7 +1,9 @@
 package SyntaxTree;
 
+import LLVMIR.BasicBlock;
+import LLVMIR.Function;
+import LLVMIR.Instructions.Ret;
 import frontend.Error;
-import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -28,12 +30,13 @@ public class Block implements SyntaxTreeNode {  // Block → '{' { BlockItem } '
         return sb.append(rBrace).append("<Block>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean hasEnteredScope, boolean isLoop) {
+    public void analyze(SymbolStack symbolStack, Function function, boolean hasEnteredScope,
+                        BasicBlock forCondBasicBlock, BasicBlock forEndBasicBlock) {
         if (!hasEnteredScope) {
             symbolStack.enterScope();
         }
         for (BlockItem blockItem : blockItems) {
-            blockItem.analyze(symbolStack, funcSymbol, isLoop);
+            blockItem.analyze(symbolStack, function, forCondBasicBlock, forEndBasicBlock);
         }
         symbolStack.exitScope();
     }
@@ -41,6 +44,14 @@ public class Block implements SyntaxTreeNode {  // Block → '{' { BlockItem } '
     public void analyzeReturn(SymbolStack symbolStack) {
         if (blockItems.isEmpty() || !blockItems.get(blockItems.size() - 1).analyzeReturn(symbolStack)) {
             symbolStack.addError(new Error(rBrace.getLineNumber(), 'g'));
+        }
+    }
+
+    public void analyzeVoidReturn(Function function) {
+        if (blockItems.isEmpty()) {
+            function.getCurBasicBlock().addInstruction(new Ret(function, null));
+        } else {
+            blockItems.get(blockItems.size() - 1).analyzeVoidReturn(function);
         }
     }
 }

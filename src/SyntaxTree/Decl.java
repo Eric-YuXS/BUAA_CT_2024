@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import LLVMIR.Module;
 import frontend.SymbolStack;
 
 public class Decl implements SyntaxTreeNode {  // Decl → ConstDecl | VarDecl
@@ -8,7 +9,7 @@ public class Decl implements SyntaxTreeNode {  // Decl → ConstDecl | VarDecl
         return "super<Decl>\n";
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    public void analyze(SymbolStack symbolStack, Module module) {
         System.err.println("super<Decl>");
     }
 }

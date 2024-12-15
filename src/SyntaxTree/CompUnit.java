@@ -1,5 +1,6 @@
 package SyntaxTree;
 
+import LLVMIR.Module;
 import frontend.SymbolStack;
 
 import java.util.ArrayList;
@@ -27,13 +28,15 @@ public class CompUnit implements SyntaxTreeNode {  // CompUnit → {Decl} {FuncD
         return sb.append(mainFuncDef).append("<CompUnit>\n").toString();
     }
 
-    public void analyze(SymbolStack symbolStack) {
+    public Module analyze(SymbolStack symbolStack) {
+        Module module = new Module();
         for (Decl decl : decls) {
-            decl.analyze(symbolStack);
+            decl.analyze(symbolStack, module);
         }
         for (FuncDef funcDef : funcDefs) {
-            funcDef.analyze(symbolStack);
+            funcDef.analyze(symbolStack, module);
         }
-        mainFuncDef.analyze(symbolStack);
+        mainFuncDef.analyze(symbolStack, module);
+        return module;
     }
 }
