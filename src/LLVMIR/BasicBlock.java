@@ -1,6 +1,6 @@
 package LLVMIR;
 
-import LLVMIR.Instructions.Ret;
+import LLVMIR.Instructions.*;
 
 import java.util.ArrayList;
 
@@ -44,5 +44,21 @@ public class BasicBlock extends Value {
     @Override
     public String toNameString() {
         return "%" + getName();
+    }
+
+    @Override
+    public String toMips() {
+        StringBuilder sb = new StringBuilder();
+        for (Instruction instruction : instructions) {
+            sb.append(instruction.toMips());
+        }
+        return sb.toString();
+    }
+
+    public int countMemUse(int count) {
+        for (Instruction instruction : instructions) {
+            count = instruction.countMemUse(count);
+        }
+        return count;
     }
 }

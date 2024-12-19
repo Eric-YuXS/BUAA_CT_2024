@@ -12,6 +12,7 @@ public class Function extends Value {
     private final ArrayList<BasicBlock> basicBlocks;
     private int instructionCount;
     private int basicBlockCount;
+    private int spOffset;
 
     public Function(Module module, FuncSymbol funcSymbol) {
         super(funcSymbol.getSymbolName(), funcSymbol.getSymbolType() == SymbolType.VoidFunc ? ValueType.VOID : ValueType.INTEGER,
@@ -58,6 +59,10 @@ public class Function extends Value {
         return "b" + basicBlockCount++;
     }
 
+    public int getSpOffset() {
+        return spOffset;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -83,5 +88,38 @@ public class Function extends Value {
     @Override
     public String toTypeAndNameString() {
         return getSymbolType().toValueString() + " @" + getName();
+    }
+
+    public String toMips() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getName()).append(":\n");
+        int memUseCount = countMemUse();
+        sb.append("\taddiu $sp, $sp, -").append(memUseCount).append("\n");
+        sb.append("\tsw $ra, 0($sp)\n");
+        sb.append("\tsw $fp, 4($sp)\n");
+        sb.append("\taddiu $fp, $sp, ").append(memUseCount).append("\n");
+        for (Instruction instruction : paramInstructions) {
+            sb.append(instruction.toMips());
+        }
+        for (BasicBlock basicBlock : basicBlocks) {
+            sb.append(basicBlock.toMips());
+        }
+        sb.append("\tlw $ra, 0($sp)\n");
+        sb.append("\tlw $fp, 4($sp)\n");
+        sb.append("\taddiu $sp, $sp, ").append(memUseCount).append("\n");
+        sb.append("\tjr $ra\n");
+        return sb.toString();
+    }
+
+    private int countMemUse() {
+        int count = 8;
+        for (Instruction instruction : paramInstructions) {
+            count = instruction.countMemUse(count);
+        }
+        for (BasicBlock basicBlock : basicBlocks) {
+            count = basicBlock.countMemUse(count);
+        }
+        this.spOffset = count;
+        return count;
     }
 }

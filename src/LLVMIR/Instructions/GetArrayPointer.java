@@ -37,4 +37,14 @@ public class GetArrayPointer extends Instruction {
     public String toTypeAndNameString() {
         return getSymbolType().toValueString() + " %" + getName();
     }
+
+    @Override
+    public String toMips() {
+        return "";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        return count;
+    }
 }

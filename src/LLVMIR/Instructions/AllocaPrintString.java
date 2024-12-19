@@ -8,11 +8,13 @@ import frontend.SymbolType;
 import java.util.ArrayList;
 
 public class AllocaPrintString extends Instruction {
-    private String string;
+    private String preparedString;
+    private final String string;  // without quotations
     private int size;
 
     public AllocaPrintString(Module module, String string) {
         super(null, module.getNextStringInstructionName(), ValueType.POINTER, SymbolType.ConstCharArray, new ArrayList<>());
+        this.string = string;
         prepareString(string);
     }
 
@@ -92,14 +94,14 @@ public class AllocaPrintString extends Instruction {
         }
         sb.append("\\00");
         newLength++;
-        this.string = sb.toString();
+        this.preparedString = sb.toString();
         size = newLength;
     }
 
     @Override
     public String toString() {
         return "@" + getName() + " = private unnamed_addr constant [" + size + " x i8] c\"" +
-                string + "\", align 1\n";
+                preparedString + "\", align 1\n";
     }
 
     @Override
@@ -110,5 +112,10 @@ public class AllocaPrintString extends Instruction {
     @Override
     public String toTypeAndNameString() {
         return "[" + size + " x i8]* @" + getName();
+    }
+
+    @Override
+    public String toMips() {
+        return getName() + ":\t.asciiz \"" + string + "\"\n";
     }
 }

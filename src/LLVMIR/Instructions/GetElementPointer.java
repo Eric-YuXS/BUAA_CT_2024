@@ -38,4 +38,15 @@ public class GetElementPointer extends Instruction {
     public String toTypeAndNameString() {
         return getSymbolType().toValueString() + "* %" + getName();
     }
+
+    @Override
+    public String toMips() {
+        return "";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        setSpOffset(((Instruction) getUses().get(0)).getSpOffset() + 4 * getUses().get(1).getValue());
+        return count;
+    }
 }

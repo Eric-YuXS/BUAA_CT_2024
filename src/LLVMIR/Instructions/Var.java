@@ -26,4 +26,15 @@ public class Var extends Instruction {
     public String toTypeAndNameString() {
         return getSymbolType().toValueString() + "* %" + getName();
     }
+
+    @Override
+    public String toMips() {
+        return "";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        setSpOffset(count);
+        return count + 4;
+    }
 }

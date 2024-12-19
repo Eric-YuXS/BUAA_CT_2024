@@ -33,4 +33,15 @@ public class Alloca extends Instruction {
     public String toTypeAndNameString() {
         return "[" + size + " x " + getSymbolType().arrayOrVarToVar().toValueString() + "]* %" + getName();
     }
+
+    @Override
+    public String toMips() {
+        return "";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        setSpOffset(count);
+        return count + 4 * size;
+    }
 }

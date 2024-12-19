@@ -71,4 +71,20 @@ public class Module {
         }
         return sb.toString();
     }
+
+    public String toMips() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(".data\n");
+        for (Instruction instruction : instructions) {
+            sb.append(instruction.toMips());
+        }
+        for (Instruction instruction : stringInstructions.values()) {
+            sb.append(instruction.toMips());
+        }
+        sb.append(".text\n\tjal main\n\tli $v0, 10\n\tsyscall\n");
+        for (Function function : functions) {
+            sb.append("\n").append(function.toMips());
+        }
+        return sb.toString();
+    }
 }

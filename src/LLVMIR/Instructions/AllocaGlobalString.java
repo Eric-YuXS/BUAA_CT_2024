@@ -7,11 +7,13 @@ import frontend.Symbol;
 import java.util.ArrayList;
 
 public class AllocaGlobalString extends Instruction {
-    private String string;
+    private String preparedString;
+    private final String string;  // within quotations
     private final int size;
 
     public AllocaGlobalString(Symbol symbol, int size, String string) {
         super(null, symbol.getSymbolName(), ValueType.POINTER, symbol.getSymbolType(), new ArrayList<>());
+        this.string = string;
         this.size = size;
         prepareString(string);
     }
@@ -96,13 +98,13 @@ public class AllocaGlobalString extends Instruction {
         for (i = 0; i < size - newLength; i++) {
             sb.append("\\00");
         }
-        this.string = sb.toString();
+        this.preparedString = sb.toString();
     }
 
     @Override
     public String toString() {
         return "@" + getName() + " = dso_local global [" + size + " x " + getSymbolType().arrayOrVarToVar().toValueString()
-                + "]  c\"" + string + "\", align 1\n";
+                + "]  c\"" + preparedString + "\", align 1\n";
     }
 
     @Override
@@ -113,5 +115,10 @@ public class AllocaGlobalString extends Instruction {
     @Override
     public String toTypeAndNameString() {
         return "[" + size + " x " + getSymbolType().arrayOrVarToVar().toValueString() + "]* @" + getName();
+    }
+
+    @Override
+    public String toMips() {
+        return getName() + ":\t.asciiz " + string + "\n";
     }
 }

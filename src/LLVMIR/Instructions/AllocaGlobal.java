@@ -50,4 +50,23 @@ public class AllocaGlobal extends Instruction {
     public String toTypeAndNameString() {
         return "[" + size + " x " + getSymbolType().arrayOrVarToVar().toValueString() + "]* @" + getName();
     }
+
+    @Override
+    public String toMips() {
+        ArrayList<Value> uses = getUses();
+        if (uses.isEmpty()) {
+            return getName() + (getSymbolType().arrayOrVarToVar().isI32() ?  ":\t.word 0:" : ":\t.byte 0:") + size + "\n";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getName()).append(getSymbolType().arrayOrVarToVar().isI32() ?  ":\t.word " : ":\t.byte ")
+                    .append(uses.get(0).getValue());
+            for (int i = 1; i < uses.size(); i++) {
+                sb.append(", ").append(uses.get(i).getValue());
+            }
+            for (int i = 0; i < size - uses.size(); i++) {
+                sb.append(", ").append("0");
+            }
+            return sb.append("\n").toString();
+        }
+    }
 }

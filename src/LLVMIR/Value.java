@@ -63,4 +63,8 @@ public class Value {
     public String toTypeAndNameString() {
         return "Value\n";
     }
+
+    public String toMips() {
+        return "Value\n";
+    }
 }

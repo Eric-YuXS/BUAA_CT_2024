@@ -39,6 +39,7 @@ public class Compiler {
                     errorOut.write(error.toString() + "\n");
                 }
             }
+            System.out.println(module.toMips());
             in.close();
             out.close();
             errorOut.close();

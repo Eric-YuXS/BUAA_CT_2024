@@ -41,4 +41,39 @@ public class Rem extends Instruction {
             return getSymbolType().toValueString() + " %" + getName();
         }
     }
+
+    @Override
+    public String toMips() {
+        ArrayList<Value> uses = getUses();
+        if (getValue() == null) {
+            if (uses.get(0).getValue() != null) {
+                return "\tli $t0, " + uses.get(0).getValue() + "\n" +
+                        "\tlw $t1, " + ((Instruction) uses.get(1)).getSpOffset() + "($sp)\n" +
+                        "\tdiv $t0, $t1\n" +
+                        "\tmfhi $t0\n" +
+                        "\tsw $t0, " + getSpOffset() + "($sp)\n";
+            } else if (uses.get(1).getValue() != null) {
+                return "\tlw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n" +
+                        "\tlw $t1, " + uses.get(1).getValue() + "\n" +
+                        "\tdiv $t0, $t1\n" +
+                        "\tmfhi $t0\n" +
+                        "\tsw $t0, " + getSpOffset() + "($sp)\n";
+            } else {
+                return "\tlw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n" +
+                        "\tlw $t1, " + ((Instruction) uses.get(1)).getSpOffset() + "($sp)\n" +
+                        "\tdiv $t0, $t1\n" +
+                        "\tmfhi $t0\n" +
+                        "\tsw $t0, " + getSpOffset() + "($sp)\n";
+            }
+        } else {
+            return "\tli $t0, " + getValue() + "\n" +
+                    "\tsw $t0, " + getSpOffset() + "($sp)\n";
+        }
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        setSpOffset(count);
+        return count + 4;
+    }
 }

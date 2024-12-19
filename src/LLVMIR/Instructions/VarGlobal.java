@@ -16,7 +16,7 @@ public class VarGlobal extends Instruction {
     @Override
     public String toString() {
         return "@" + getName() + " = dso_local global " + getSymbolType().toValueString() + " " +
-                (getUses().get(0) == null ? "0" : getUses().get(0).getValue()) + "\n";
+                (getUses().get(0) == null ? "0" : getUses().get(0).toNameString()) + "\n";
     }
 
     @Override
@@ -27,5 +27,11 @@ public class VarGlobal extends Instruction {
     @Override
     public String toTypeAndNameString() {
         return getSymbolType().toValueString() + "* @" + getName();
+    }
+
+    @Override
+    public String toMips() {
+        return getName() + (getSymbolType().isI32() ?  ":\t.word " : ":\t.byte ") +
+                (getUses().get(0) == null ? "0" : getUses().get(0).getValue()) + "\n";
     }
 }

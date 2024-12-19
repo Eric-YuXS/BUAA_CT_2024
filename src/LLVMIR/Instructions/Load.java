@@ -29,4 +29,15 @@ public class Load extends Instruction {
     public String toTypeAndNameString() {
         return getSymbolType().toValueString() + " %" + getName();
     }
+
+    @Override
+    public String toMips() {
+        return "";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        setSpOffset(((Instruction) getUses().get(0)).getSpOffset());
+        return count;
+    }
 }

@@ -29,8 +29,8 @@ public class FuncFParams implements SyntaxTreeNode {  // FuncFParams → FuncFPa
 
     public ArrayList<Symbol> analyze(SymbolStack symbolStack, Function function) {
         ArrayList<Symbol> symbols = new ArrayList<>();
-        for (FuncFParam funcFParam : funcFParams) {
-            symbols.add(funcFParam.analyze(symbolStack, function));
+        for (int i = 0; i < funcFParams.size(); i++) {
+            symbols.add(funcFParams.get(i).analyze(symbolStack, function, i));
         }
         return symbols;
     }
