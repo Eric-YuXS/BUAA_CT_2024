@@ -32,12 +32,23 @@ public class Load extends Instruction {
 
     @Override
     public String toMips() {
-        return "";
+        if (getUses().get(0) instanceof GetElementPointer) {
+            return "\tlw $t0, " + ((Instruction) getUses().get(0)).getSpOffset() + "($sp)\n" +
+                    "\tlw $t1, 0($t0)\n" +
+                    "\tsw $t1, " + getSpOffset() + "($sp)\n";
+        } else {
+            return "";
+        }
     }
 
     @Override
     public int countMemUse(int count) {
-        setSpOffset(((Instruction) getUses().get(0)).getSpOffset());
-        return count;
+        if (getUses().get(0) instanceof GetElementPointer) {
+            setSpOffset(count);
+            return count + 4;
+        } else {
+            setSpOffset(((Instruction) getUses().get(0)).getSpOffset());
+            return count;
+        }
     }
 }

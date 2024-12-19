@@ -119,6 +119,7 @@ public class AllocaGlobalString extends Instruction {
 
     @Override
     public String toMips() {
+        // TODO 改成word形式
         return getName() + ":\t.asciiz " + string + "\n";
     }
 }

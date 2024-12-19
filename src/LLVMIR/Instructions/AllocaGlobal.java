@@ -55,11 +55,10 @@ public class AllocaGlobal extends Instruction {
     public String toMips() {
         ArrayList<Value> uses = getUses();
         if (uses.isEmpty()) {
-            return getName() + (getSymbolType().arrayOrVarToVar().isI32() ?  ":\t.word 0:" : ":\t.byte 0:") + size + "\n";
+            return getName() + ":\t.word 0:" + size + "\n";
         } else {
             StringBuilder sb = new StringBuilder();
-            sb.append(getName()).append(getSymbolType().arrayOrVarToVar().isI32() ?  ":\t.word " : ":\t.byte ")
-                    .append(uses.get(0).getValue());
+            sb.append(getName()).append(":\t.word ").append(uses.get(0).getValue());
             for (int i = 1; i < uses.size(); i++) {
                 sb.append(", ").append(uses.get(i).getValue());
             }

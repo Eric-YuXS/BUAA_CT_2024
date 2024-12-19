@@ -2,6 +2,7 @@ package LLVMIR.Instructions;
 
 import LLVMIR.Function;
 import LLVMIR.Instruction;
+import LLVMIR.Value;
 import LLVMIR.ValueType;
 import frontend.SymbolType;
 
@@ -41,12 +42,20 @@ public class GetElementPointer extends Instruction {
 
     @Override
     public String toMips() {
-        return "";
+        ArrayList<Value> uses = getUses();
+        if (size == -1) {
+            return "\tlw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n" +
+                    "\taddi $t0, $t0, " + uses.get(1).getValue() * 4 + "\n" +
+                    "\tsw $t0, " + getSpOffset() + "($sp)\n";
+        } else {
+            return "\taddiu $t0, $sp, " + (((Instruction) uses.get(0)).getSpOffset() + uses.get(1).getValue() * 4) + "\n" +
+                    "\tsw $t0, " + getSpOffset() + "($sp)\n";
+        }
     }
 
     @Override
     public int countMemUse(int count) {
-        setSpOffset(((Instruction) getUses().get(0)).getSpOffset() + 4 * getUses().get(1).getValue());
-        return count;
+        setSpOffset(count);
+        return count + 4;
     }
 }

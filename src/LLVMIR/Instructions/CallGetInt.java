@@ -30,4 +30,17 @@ public class CallGetInt extends Instruction {
     public String toTypeAndNameString() {
         return getSymbolType().toValueString() + " %" + getName();
     }
+
+    @Override
+    public String toMips() {
+        return "\tli $v0, 5\n" +
+                "\tsyscall\n" +
+                "\tsw $v0, " + getSpOffset() + "($sp)\n";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        setSpOffset(count);
+        return count + 4;
+    }
 }

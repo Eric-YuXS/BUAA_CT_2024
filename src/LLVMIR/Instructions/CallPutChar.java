@@ -17,4 +17,16 @@ public class CallPutChar extends Instruction {
     public String toString() {
         return "\tcall void @putch(" + getUses().get(0).toTypeAndNameString() + ")\n";
     }
+
+    @Override
+    public String toMips() {
+        return "\tlw $a0, " + ((Instruction) getUses().get(0)).getSpOffset() + "($sp)\n" +
+                "\tli $v0, 11\n" +
+                "\tsyscall\n";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        return count;
+    }
 }

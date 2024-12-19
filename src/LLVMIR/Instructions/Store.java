@@ -20,12 +20,24 @@ public class Store extends Instruction {
     @Override
     public String toMips() {
         ArrayList<Value> uses = getUses();
-        if (uses.get(1).getValue() == null) {
-            return "\tlw $t0, " + ((Instruction) uses.get(1)).getSpOffset() + "($sp)\n" +
-                    "\tsw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n";
+        if (getUses().get(0) instanceof GetElementPointer) {
+            if (uses.get(1).getValue() == null) {
+                return "\tlw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n" +
+                        "\tlw $t1, " + ((Instruction) uses.get(1)).getSpOffset() + "($sp)\n" +
+                        "\tsw $t1, 0($t0)\n";
+            } else {
+                return "\tlw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n" +
+                        "\tli $t1, " + uses.get(1).getValue() + "\n" +
+                        "\tsw $t1, 0($t0)\n";
+            }
         } else {
-            return "\tli $t0, " + uses.get(1).getValue() + "\n" +
-                    "\tsw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n";
+            if (uses.get(1).getValue() == null) {
+                return "\tlw $t0, " + ((Instruction) uses.get(1)).getSpOffset() + "($sp)\n" +
+                        "\tsw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n";
+            } else {
+                return "\tli $t0, " + uses.get(1).getValue() + "\n" +
+                        "\tsw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n";
+            }
         }
     }
 

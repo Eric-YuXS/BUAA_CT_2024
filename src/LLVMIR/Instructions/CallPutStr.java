@@ -20,4 +20,16 @@ public class CallPutStr extends Instruction {
         return "\tcall void @putstr(i8* getelementptr inbounds ([" + size + " x i8], " + allocaPrintStringInstruction.toTypeAndNameString()
                 + ", i64 0, i64 0))\n";
     }
+
+    @Override
+    public String toMips() {
+        return "\tla $a0, " + getUses().get(0).getName() + "\n" +
+                "\tli $v0, 4\n" +
+                "\tsyscall\n";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        return count;
+    }
 }
