@@ -15,6 +15,7 @@ public class Compiler {
         try {
             BufferedReader in = new BufferedReader(new FileReader("testfile.txt"));
             BufferedWriter out = new BufferedWriter(new FileWriter("llvm_ir.txt"));
+            BufferedWriter mipsOut = new BufferedWriter(new FileWriter("mips.txt"));
             BufferedWriter errorOut = new BufferedWriter(new FileWriter("error.txt"));
 
             Lexer lexer = new Lexer(in);
@@ -39,9 +40,10 @@ public class Compiler {
                     errorOut.write(error.toString() + "\n");
                 }
             }
-            System.out.println(module.toMips());
+            mipsOut.write(module.toMips());
             in.close();
             out.close();
+            mipsOut.close();
             errorOut.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -49,6 +49,7 @@ public class BasicBlock extends Value {
     @Override
     public String toMips() {
         StringBuilder sb = new StringBuilder();
+        sb.append(getFunction().getName()).append(getName()).append(":\n");
         for (Instruction instruction : instructions) {
             sb.append(instruction.toMips());
         }

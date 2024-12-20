@@ -22,4 +22,14 @@ public class BrUnconditional extends Instruction {
     public String toString() {
         return "\tbr label " + getUses().get(0).toNameString() + "\n";
     }
+
+    @Override
+    public String toMips() {
+        return "\tj " + ((BasicBlock) getUses().get(0)).getFunction().getName() + getUses().get(0).getName() + "\n";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        return count;
+    }
 }
