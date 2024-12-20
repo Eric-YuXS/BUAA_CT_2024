@@ -28,4 +28,15 @@ public class BrConditional extends Instruction {
         return "\tbr " + getUses().get(0).toTypeAndNameString() + ", label " + getUses().get(1).toNameString()
                 + ", label " + getUses().get(2).toNameString() + "\n";
     }
+
+    @Override
+    public String toMips() {
+        return "\tlw %t0, " + ((Instruction) getUses().get(0)).getSpOffset() + "($sp)\n" +
+                "\tbeq $t0, $0, " + ((BasicBlock) getUses().get(2)).getFunction().getName() + getUses().get(2).getName() + "\n";
+    }
+
+    @Override
+    public int countMemUse(int count) {
+        return count;
+    }
 }

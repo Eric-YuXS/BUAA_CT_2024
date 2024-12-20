@@ -69,20 +69,51 @@ public class Icmp extends Instruction {
     public String toMips() {
         ArrayList<Value> uses = getUses();
         if (getValue() == null) {
+            StringBuilder sb = new StringBuilder();
             if (uses.get(0).getValue() != null) {
-                return "\tlw $t0, " + ((Instruction) uses.get(1)).getSpOffset() + "($sp)\n" +
-                        "\taddi $t0, $t0, " + uses.get(0).getValue() + "\n" +
-                        "\tsw $t0, " + getSpOffset() + "($sp)\n";
-            } else if (uses.get(1).getValue() != null) {
-                return "\tlw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n" +
-                        "\taddi $t0, $t0, " + uses.get(1).getValue() + "\n" +
-                        "\tsw $t0, " + getSpOffset() + "($sp)\n";
+                sb.append("\tli $t0, ").append(uses.get(0).getValue()).append("\n");
             } else {
-                return "\tlw $t0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n" +
-                        "\tlw $t1, " + ((Instruction) uses.get(1)).getSpOffset() + "($sp)\n" +
-                        "\tadd $t0, $t0, $t1\n" +
-                        "\tsw $t0, " + getSpOffset() + "($sp)\n";
+                sb.append("\tlw $t0, ").append(((Instruction) uses.get(0)).getSpOffset()).append("($sp)\n");
             }
+            if (uses.get(1).getValue() != null) {
+                sb.append("\tli $t1, ").append(uses.get(1).getValue()).append("\n");
+            } else {
+                sb.append("\tlw $t1, ").append(((Instruction) uses.get(1)).getSpOffset()).append("($sp)\n");
+            }
+            switch (cmpType.getIcmpInstruction()) {
+                case "slt":
+                    sb.append("\tslt $t0, $t0, $t1\n")
+                            .append("\tsw $t0, ").append(getSpOffset()).append("($sp)\n");
+                    break;
+                case "sle":
+                    sb.append("\tslt $t0, $t0, $t1\n")
+                            .append("\txori $t0, $t0, 1\n")
+                            .append("\tsw $t0, ").append(getSpOffset()).append("($sp)\n");
+                    break;
+                case "sgt":
+                    sb.append("\tslt $t0, $t1, $t0\n")
+                            .append("\tsw $t0, ").append(getSpOffset()).append("($sp)\n");
+                    break;
+                case "sge":
+                    sb.append("\tslt $t0, $t1, $t0\n")
+                            .append("\txori $t0, $t0, 1\n")
+                            .append("\tsw $t0, ").append(getSpOffset()).append("($sp)\n");
+                    break;
+                case "eq":
+                    sb.append("\tslt $t2, $t0, $t1\n")
+                            .append("\tslt $t1, $t1, $t0\n")
+                            .append("\tor $t0, $t1, $t2\n")
+                            .append("\txori $t0, $t0, 1\n")
+                            .append("\tsw $t0, ").append(getSpOffset()).append("($sp)\n");
+                    break;
+                case "ne":
+                    sb.append("\tslt $t0, $t0, $t1\n")
+                            .append("\tslt $t1, $t1, $t0\n")
+                            .append("\tor $t0, $t1, $t2\n")
+                            .append("\tsw $t0, ").append(getSpOffset()).append("($sp)\n");
+                    break;
+            }
+            return sb.toString();
         } else {
             return "\tli $t0, " + getValue() + "\n" +
                     "\tsw $t0, " + getSpOffset() + "($sp)\n";

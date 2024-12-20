@@ -29,10 +29,14 @@ public class Ret extends Instruction {
     @Override
     public String toMips() {
         ArrayList<Value> uses = getUses();
-        if (uses.get(0).getValue() == null) {
-            return "\tlw $v0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n";
+        if (!uses.isEmpty()) {
+            if (uses.get(0).getValue() == null) {
+                return "\tlw $v0, " + ((Instruction) uses.get(0)).getSpOffset() + "($sp)\n";
+            } else {
+                return "\tli $v0, " + uses.get(0).getValue() + "\n";
+            }
         } else {
-            return "\tli $v0, " + uses.get(0).getValue() + "\n";
+            return "";
         }
     }
 
