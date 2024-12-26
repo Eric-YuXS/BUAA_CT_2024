@@ -27,11 +27,12 @@ public class Compiler {
             errors.addAll(parser.getErrors());
 
             SymbolStack symbolStack = new SymbolStack();
-            Module module = compUnit.analyze(symbolStack);
+            compUnit.errorAnalyze(symbolStack);
             ArrayList<SymbolTable> symbolTables = SymbolTable.getSymbolTables();
             errors.addAll(symbolStack.getErrors());
 
             if (errors.isEmpty()) {
+                Module module = compUnit.analyze(new SymbolStack());
                 out.write(module.toString());
             } else {
                 Collections.sort(errors);
