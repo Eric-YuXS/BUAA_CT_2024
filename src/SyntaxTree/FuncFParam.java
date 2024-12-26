@@ -34,6 +34,18 @@ public class FuncFParam implements SyntaxTreeNode {  // FuncFParam → BType Ide
         return sb.append("<FuncFParam>\n").toString();
     }
 
+    public Symbol errorAnalyze(SymbolStack symbolStack) {
+        SymbolType symbolType = bType.getSymbolType();
+        if (lBrack != null) {
+            symbolType = symbolType.varToArray();
+        }
+        Symbol symbol = new Symbol(symbolType, ident.getString());
+        if (!symbolStack.addSymbol(symbol)) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
+        }
+        return symbol;
+    }
+
     public Symbol analyze(SymbolStack symbolStack, Function function) {
         SymbolType symbolType = bType.getSymbolType();
         if (lBrack != null) {

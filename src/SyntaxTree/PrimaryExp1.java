@@ -3,6 +3,7 @@ package SyntaxTree;
 import LLVMIR.Function;
 import LLVMIR.Instruction;
 import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.Token;
 
 public class PrimaryExp1 extends PrimaryExp {  // PrimaryExp → '(' Exp ')'
@@ -25,6 +26,10 @@ public class PrimaryExp1 extends PrimaryExp {  // PrimaryExp → '(' Exp ')'
             sb.append(rParent);
         }
         return sb.append("<PrimaryExp>\n").toString();
+    }
+
+    public SymbolType errorAnalyze(SymbolStack symbolStack) {
+        return exp.errorAnalyze(symbolStack);
     }
 
     public Instruction analyze(SymbolStack symbolStack, Function function) {

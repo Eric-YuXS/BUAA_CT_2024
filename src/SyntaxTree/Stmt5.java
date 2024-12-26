@@ -4,6 +4,7 @@ import LLVMIR.BasicBlock;
 import LLVMIR.Function;
 import LLVMIR.Instructions.BrConditional;
 import LLVMIR.Instructions.BrUnconditional;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -53,6 +54,20 @@ public class Stmt5 extends Stmt {  // Stmt → 'for' '(' [ForStmt] ';' [Cond] ';
             sb.append(rParent);
         }
         return sb.append(stmt).append("<Stmt>\n").toString();
+    }
+
+    @Override
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        if (forStmt1 != null) {
+            forStmt1.errorAnalyze(symbolStack);
+        }
+        if (cond != null) {
+            cond.errorAnalyze(symbolStack);
+        }
+        if (forStmt2 != null) {
+            forStmt2.errorAnalyze(symbolStack);
+        }
+        stmt.errorAnalyze(symbolStack, funcSymbol, true);
     }
 
     @Override

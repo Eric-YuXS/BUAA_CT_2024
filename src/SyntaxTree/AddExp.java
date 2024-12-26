@@ -5,6 +5,7 @@ import LLVMIR.Instruction;
 import LLVMIR.Instructions.Add;
 import LLVMIR.Instructions.Sub;
 import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.Token;
 import frontend.TokenType;
 
@@ -28,6 +29,20 @@ public class AddExp implements SyntaxTreeNode {  // AddExp → MulExp | AddExp (
             sb.append("<AddExp>\n").append(operator).append(mulExps.get(mulExpsIndex++));
         }
         return sb.append("<AddExp>\n").toString();
+    }
+
+    public SymbolType errorAnalyze(SymbolStack symbolStack) {
+        if (mulExps.size() == 1) {
+            return mulExps.get(0).errorAnalyze(symbolStack);
+        } else {
+            for (MulExp mulExp : mulExps) {
+                if (mulExp.errorAnalyze(symbolStack) == SymbolType.VoidFunc) {
+                    System.err.println("Calculate with void!");
+                    return null;
+                }
+            }
+            return SymbolType.Int;
+        }
     }
 
     public Instruction analyze(SymbolStack symbolStack, Function function) {

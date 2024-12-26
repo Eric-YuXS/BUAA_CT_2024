@@ -42,6 +42,17 @@ public class ConstDef implements SyntaxTreeNode {  // ConstDef → Ident [ '[' C
         return sb.append(assign).append(constInitVal).append("<ConstDef>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack, SymbolType symbolType) {
+        if (constExp != null) {
+            symbolType = symbolType.constToConstArray();
+            constExp.errorAnalyze(symbolStack);
+        }
+        if (!symbolStack.addSymbol(new Symbol(symbolType, ident.getString()))) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
+        }
+        constInitVal.errorAnalyze(symbolStack);
+    }
+
     public void analyze(SymbolStack symbolStack, Module module, SymbolType symbolType) {
         Function function = module.getCurFunction();
         if (constExp != null) {

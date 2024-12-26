@@ -35,6 +35,12 @@ public class ConstInitVal2 extends ConstInitVal {  // ConstInitVal → '{' [ Con
         return sb.append(rBrace).append("<ConstInitVal>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        for (ConstExp constExp : constExps) {
+            constExp.errorAnalyze(symbolStack);
+        }
+    }
+
     public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
         ArrayList<Instruction> instructions = new ArrayList<>();
         for (ConstExp constExp : constExps) {

@@ -28,6 +28,16 @@ public class CompUnit implements SyntaxTreeNode {  // CompUnit → {Decl} {FuncD
         return sb.append(mainFuncDef).append("<CompUnit>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        for (Decl decl : decls) {
+            decl.errorAnalyze(symbolStack);
+        }
+        for (FuncDef funcDef : funcDefs) {
+            funcDef.errorAnalyze(symbolStack);
+        }
+        mainFuncDef.errorAnalyze(symbolStack);
+    }
+
     public Module analyze(SymbolStack symbolStack) {
         Module module = new Module();
         for (Decl decl : decls) {

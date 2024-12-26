@@ -2,6 +2,7 @@ package SyntaxTree;
 
 import LLVMIR.BasicBlock;
 import LLVMIR.Function;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -25,6 +26,13 @@ public class Stmt2 extends Stmt {  // Stmt → [Exp] ';'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    @Override
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        if (exp != null) {
+            exp.errorAnalyze(symbolStack);
+        }
     }
 
     @Override

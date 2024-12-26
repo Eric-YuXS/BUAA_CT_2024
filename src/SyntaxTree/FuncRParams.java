@@ -26,6 +26,14 @@ public class FuncRParams implements SyntaxTreeNode {  // FuncRParams → Exp { '
         return sb.append("<FuncRParams>\n").toString();
     }
 
+    public ArrayList<SymbolType> errorAnalyze(SymbolStack symbolStack) {
+        ArrayList<SymbolType> symbolTypes = new ArrayList<>();
+        for (Exp exp : exps) {
+            symbolTypes.add(exp.errorAnalyze(symbolStack));
+        }
+        return symbolTypes;
+    }
+
     public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
         ArrayList<Instruction> instructions = new ArrayList<>();
         for (Exp exp : exps) {

@@ -6,6 +6,7 @@ import LLVMIR.Instruction;
 import LLVMIR.Instructions.CallGetInt;
 import LLVMIR.Instructions.Store;
 import LLVMIR.Instructions.Trunc;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -38,6 +39,11 @@ public class Stmt9 extends Stmt {  // Stmt → LVal '=' 'getint''('')'';'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    @Override
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        lVal.errorAnalyze(symbolStack, true);
     }
 
     @Override

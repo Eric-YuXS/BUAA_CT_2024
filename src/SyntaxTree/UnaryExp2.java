@@ -38,6 +38,44 @@ public class UnaryExp2 extends UnaryExp {  // UnaryExp → Ident '(' [FuncRParam
     }
 
     @Override
+    public SymbolType errorAnalyze(SymbolStack symbolStack) {
+        Symbol symbol = symbolStack.getSymbol(ident.getString());
+        if (symbol == null) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'c'));
+            if (funcRParams != null) {
+                funcRParams.errorAnalyze(symbolStack);
+            }
+            return null;
+        } else if (symbol instanceof FuncSymbol) {
+            ArrayList<Symbol> fParams = ((FuncSymbol) symbol).getFParams();
+            int fParamsIndex = 0;
+            boolean typeErrorFlag = false;
+            boolean numErrorFlag = false;
+            if (funcRParams != null) {
+                for (SymbolType symbolType : funcRParams.errorAnalyze(symbolStack)) {
+                    if (fParamsIndex < fParams.size()) {
+                        if (!fParams.get(fParamsIndex++).getSymbolType().canAcceptRParam(symbolType)) {
+                            typeErrorFlag = true;
+                        }
+                    } else {
+                        numErrorFlag = true;
+                    }
+                }
+            }
+            if (numErrorFlag || fParamsIndex < fParams.size()) {
+                symbolStack.addError(new Error(ident.getLineNumber(), 'd'));
+            }
+            if (typeErrorFlag) {
+                symbolStack.addError(new Error(ident.getLineNumber(), 'e'));
+            }
+            return symbol.getSymbolType().funcToVarOrVoid();
+        } else {
+            System.err.println(ident.getString() + "is not a function!");
+            return null;
+        }
+    }
+
+    @Override
     public Instruction analyze(SymbolStack symbolStack, Function function) {
         Symbol symbol = symbolStack.getSymbol(ident.getString());
         if (symbol == null) {

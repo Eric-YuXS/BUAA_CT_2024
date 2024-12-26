@@ -36,6 +36,13 @@ public class ConstDecl implements SyntaxTreeNode {  // ConstDecl → 'const' BTy
         return sb.append("<ConstDecl>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        SymbolType symbolType = bType.getSymbolType().varToConst();
+        for (ConstDef constDef : constDefs) {
+            constDef.errorAnalyze(symbolStack, symbolType);
+        }
+    }
+
     public void analyze(SymbolStack symbolStack, Module module) {
         SymbolType symbolType = bType.getSymbolType().varToConst();
         for (ConstDef constDef : constDefs) {

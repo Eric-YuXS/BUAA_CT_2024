@@ -3,6 +3,7 @@ package SyntaxTree;
 import LLVMIR.BasicBlock;
 import LLVMIR.Function;
 import LLVMIR.Instructions.Ret;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 
 public class BlockItem1 extends BlockItem {  // BlockItem → Decl
@@ -16,6 +17,16 @@ public class BlockItem1 extends BlockItem {  // BlockItem → Decl
     @Override
     public String toString() {
         return decl.toString();
+    }
+
+    @Override
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        decl.errorAnalyze(symbolStack);
+    }
+
+    @Override
+    public boolean errorAnalyzeReturn(SymbolStack symbolStack) {
+        return false;
     }
 
     @Override

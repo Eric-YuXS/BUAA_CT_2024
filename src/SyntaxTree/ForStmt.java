@@ -23,6 +23,11 @@ public class ForStmt implements SyntaxTreeNode {  // ForStmt → LVal '=' Exp
         return lVal.toString() + assign + exp + "<ForStmt>\n";
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        lVal.errorAnalyze(symbolStack, true);
+        exp.errorAnalyze(symbolStack);
+    }
+
     public void analyze(SymbolStack symbolStack, Function function) {
         Instruction lvalInstruction = lVal.analyze(symbolStack, function, true);
         Instruction expInstruction = exp.analyze(symbolStack, function);

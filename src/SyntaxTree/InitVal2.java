@@ -36,6 +36,13 @@ public class InitVal2 extends InitVal {  // InitVal → '{' [ Exp { ',' Exp } ] 
     }
 
     @Override
+    public void errorAnalyze(SymbolStack symbolStack) {
+        for (Exp exp : exps) {
+            exp.errorAnalyze(symbolStack);
+        }
+    }
+
+    @Override
     public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
         ArrayList<Instruction> instructions = new ArrayList<>();
         for (Exp exp : exps) {

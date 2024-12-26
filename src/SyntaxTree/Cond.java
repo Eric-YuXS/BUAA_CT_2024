@@ -18,6 +18,10 @@ public class Cond implements SyntaxTreeNode {  // Cond → LOrExp
         return lOrExp + "<Cond>\n";
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        lOrExp.errorAnalyze(symbolStack);
+    }
+
     public ArrayList<BrConditional> analyze(SymbolStack symbolStack, Function function) {
         return lOrExp.analyze(symbolStack, function);
     }

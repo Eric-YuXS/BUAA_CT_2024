@@ -42,6 +42,19 @@ public class VarDef implements SyntaxTreeNode {  // VarDef → Ident [ '[' Const
         return sb.append("<VarDef>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack, SymbolType symbolType) {
+        if (constExp != null) {
+            symbolType = symbolType.varToArray();
+            constExp.errorAnalyze(symbolStack);
+        }
+        if (!symbolStack.addSymbol(new Symbol(symbolType, ident.getString()))) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
+        }
+        if (initVal != null) {
+            initVal.errorAnalyze(symbolStack);
+        }
+    }
+
     public void analyze(SymbolStack symbolStack, Module module, SymbolType symbolType) {
         Function function = module.getCurFunction();
         if (constExp != null) {

@@ -12,6 +12,10 @@ public class InitVal implements SyntaxTreeNode {  // InitVal → Exp | '{' [ Exp
         return "super<InitVal>\n";
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        System.err.println("super<InitVal>");
+    }
+
     public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
         System.err.println("super<InitVal>");
         return null;

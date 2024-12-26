@@ -7,6 +7,7 @@ import LLVMIR.Instructions.Num;
 import LLVMIR.Instructions.Sub;
 import LLVMIR.Instructions.Zext;
 import frontend.SymbolStack;
+import frontend.SymbolType;
 import frontend.TokenType;
 
 public class UnaryExp3 extends UnaryExp {  // UnaryExp → UnaryOp UnaryExp
@@ -22,6 +23,17 @@ public class UnaryExp3 extends UnaryExp {  // UnaryExp → UnaryOp UnaryExp
     @Override
     public String toString() {
         return unaryOp.toString() + unaryExp + "<UnaryExp>\n";
+    }
+
+    @Override
+    public SymbolType errorAnalyze(SymbolStack symbolStack) {
+        SymbolType symbolType = unaryExp.errorAnalyze(symbolStack);
+        if (symbolType != SymbolType.VoidFunc) {
+            return symbolType;
+        } else {
+            System.err.println("Calculate with void!");
+            return null;
+        }
     }
 
     @Override

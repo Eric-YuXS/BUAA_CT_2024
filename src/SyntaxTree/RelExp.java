@@ -29,6 +29,12 @@ public class RelExp implements SyntaxTreeNode {  // RelExp → AddExp | RelExp (
         return sb.append("<RelExp>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        for (AddExp addExp : addExps) {
+            addExp.errorAnalyze(symbolStack);
+        }
+    }
+
     public Instruction analyze(SymbolStack symbolStack, Function function) {
         Instruction relInstruction = addExps.get(0).analyze(symbolStack, function);
         for (int i = 0; i < operators.size(); i++) {

@@ -27,6 +27,12 @@ public class LOrExp implements SyntaxTreeNode {  // LOrExp → LAndExp | LOrExp 
         return sb.append("<LOrExp>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        for (LAndExp lAndExp : lAndExps) {
+            lAndExp.errorAnalyze(symbolStack);
+        }
+    }
+
     public ArrayList<BrConditional> analyze(SymbolStack symbolStack, Function function) {
         ArrayList<BrConditional> lAndBrInstructions = lAndExps.get(0).analyze(symbolStack, function);
         ArrayList<BrConditional> lOrBrInstructions = new ArrayList<>();

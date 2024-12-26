@@ -3,6 +3,7 @@ package SyntaxTree;
 import LLVMIR.Function;
 import LLVMIR.Instruction;
 import frontend.SymbolStack;
+import frontend.SymbolType;
 
 public class UnaryExp1 extends UnaryExp {  // UnaryExp → PrimaryExp
     private final PrimaryExp primaryExp;
@@ -15,6 +16,11 @@ public class UnaryExp1 extends UnaryExp {  // UnaryExp → PrimaryExp
     @Override
     public String toString() {
         return primaryExp + "<UnaryExp>\n";
+    }
+
+    @Override
+    public SymbolType errorAnalyze(SymbolStack symbolStack) {
+        return primaryExp.errorAnalyze(symbolStack);
     }
 
     @Override

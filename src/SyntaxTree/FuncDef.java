@@ -37,6 +37,25 @@ public class FuncDef implements SyntaxTreeNode {  // FuncDef → FuncType Ident 
         return sb.append(block).append("<FuncDef>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        SymbolType symbolType = funcType.getSymbolType();
+        FuncSymbol funcSymbol = new FuncSymbol(symbolType, ident.getString());
+        if (!symbolStack.addSymbol(funcSymbol)) {
+            symbolStack.addError(new Error(ident.getLineNumber(), 'b'));
+        }
+        if (funcFParams != null) {
+            symbolStack.enterScope();
+            funcSymbol.setFParams(funcFParams.errorAnalyze(symbolStack));
+            block.errorAnalyze(symbolStack, funcSymbol, true, false);
+        } else {
+            funcSymbol.setFParams(new ArrayList<>());
+            block.errorAnalyze(symbolStack, funcSymbol, false, false);
+        }
+        if (symbolType == SymbolType.IntFunc || symbolType == SymbolType.CharFunc) {
+            block.errorAnalyzeReturn(symbolStack);
+        }
+    }
+
     public Function analyze(SymbolStack symbolStack, Module module) {
         SymbolType symbolType = funcType.getSymbolType();
         FuncSymbol funcSymbol = new FuncSymbol(symbolType, ident.getString());

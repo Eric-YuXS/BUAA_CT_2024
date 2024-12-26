@@ -34,6 +34,13 @@ public class VarDecl implements SyntaxTreeNode {  // VarDecl → BType VarDef { 
         return sb.append("<VarDecl>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        SymbolType symbolType = bType.getSymbolType();
+        for (VarDef varDef : varDefs) {
+            varDef.errorAnalyze(symbolStack, symbolType);
+        }
+    }
+
     public void analyze(SymbolStack symbolStack, Module module) {
         SymbolType symbolType = bType.getSymbolType();
         for (VarDef varDef : varDefs) {

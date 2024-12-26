@@ -2,6 +2,7 @@ package SyntaxTree;
 
 import LLVMIR.BasicBlock;
 import LLVMIR.Function;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 
 public class Stmt implements SyntaxTreeNode {
@@ -20,6 +21,10 @@ public class Stmt implements SyntaxTreeNode {
     @Override
     public String toString() {
         return "super<Stmt>\n";
+    }
+
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        System.err.println("super<Stmt>");
     }
 
     public void analyze(SymbolStack symbolStack, Function function, BasicBlock forCondBasicBlock, BasicBlock forEndBasicBlock) {

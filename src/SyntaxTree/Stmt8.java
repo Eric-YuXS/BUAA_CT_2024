@@ -5,10 +5,8 @@ import LLVMIR.Function;
 import LLVMIR.Instruction;
 import LLVMIR.Instructions.Ret;
 import LLVMIR.Instructions.Trunc;
+import frontend.*;
 import frontend.Error;
-import frontend.SymbolStack;
-import frontend.SymbolType;
-import frontend.Token;
 
 public class Stmt8 extends Stmt {  // Stmt → 'return' [Exp] ';'
     private final Token returnTk;
@@ -33,6 +31,18 @@ public class Stmt8 extends Stmt {  // Stmt → 'return' [Exp] ';'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    @Override
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        if (funcSymbol.getSymbolType() == SymbolType.VoidFunc && exp != null) {
+            symbolStack.addError(new Error(returnTk.getLineNumber(), 'f'));
+//        } else if (funcSymbol.getSymbolType() != SymbolType.VoidFunc && exp == null) {
+//            System.err.println("Return without exp in " + funcSymbol);
+        }
+        if (exp != null) {
+            exp.errorAnalyze(symbolStack);
+        }
     }
 
     @Override

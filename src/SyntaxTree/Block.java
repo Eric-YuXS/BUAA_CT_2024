@@ -4,6 +4,7 @@ import LLVMIR.BasicBlock;
 import LLVMIR.Function;
 import LLVMIR.Instructions.Ret;
 import frontend.Error;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -28,6 +29,22 @@ public class Block implements SyntaxTreeNode {  // Block → '{' { BlockItem } '
             sb.append(blockItem);
         }
         return sb.append(rBrace).append("<Block>\n").toString();
+    }
+
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean hasEnteredScope, boolean isLoop) {
+        if (!hasEnteredScope) {
+            symbolStack.enterScope();
+        }
+        for (BlockItem blockItem : blockItems) {
+            blockItem.errorAnalyze(symbolStack, funcSymbol, isLoop);
+        }
+        symbolStack.exitScope();
+    }
+
+    public void errorAnalyzeReturn(SymbolStack symbolStack) {
+        if (blockItems.isEmpty() || !blockItems.get(blockItems.size() - 1).errorAnalyzeReturn(symbolStack)) {
+            symbolStack.addError(new Error(rBrace.getLineNumber(), 'g'));
+        }
     }
 
     public void analyze(SymbolStack symbolStack, Function function, boolean hasEnteredScope,

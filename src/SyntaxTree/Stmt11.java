@@ -14,6 +14,7 @@ public class Stmt11 extends Stmt {  // Stmt → 'printf''('StringConst {','Exp}'
     private final Token printf;
     private final Token lParent;
     private final Token stringConst;
+    private final String[] strings;
     private final ArrayList<String> normalStringParts;
     private final ArrayList<String> formatStringParts;
     private final ArrayList<Exp> exps;
@@ -27,6 +28,7 @@ public class Stmt11 extends Stmt {  // Stmt → 'printf''('StringConst {','Exp}'
         this.printf = printf;
         this.lParent = lParent;
         this.stringConst = stringConst;
+        strings = stringConst.getString().split("%d|%c");
         normalStringParts = new ArrayList<>();
         formatStringParts = new ArrayList<>();
         this.exps = exps;
@@ -68,6 +70,18 @@ public class Stmt11 extends Stmt {  // Stmt → 'printf''('StringConst {','Exp}'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    @Override
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        if (strings.length - 1 != exps.size()) {
+            symbolStack.addError(new Error(printf.getLineNumber(), 'l'));
+        }
+        for (Exp exp : exps) {
+            if (exp.errorAnalyze(symbolStack) == SymbolType.VoidFunc) {
+                System.err.println("Print void!");
+            }
+        }
     }
 
     @Override

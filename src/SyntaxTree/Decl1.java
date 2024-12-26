@@ -17,6 +17,11 @@ public class Decl1 extends Decl {  // Decl → ConstDecl
     }
 
     @Override
+    public void errorAnalyze(SymbolStack symbolStack) {
+        constDecl.errorAnalyze(symbolStack);
+    }
+
+    @Override
     public void analyze(SymbolStack symbolStack, Module module) {
         constDecl.analyze(symbolStack, module);
     }

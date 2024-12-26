@@ -19,6 +19,10 @@ public class PrimaryExp3 extends PrimaryExp {  // PrimaryExp → Number
         return number + "<PrimaryExp>\n";
     }
 
+    public SymbolType errorAnalyze(SymbolStack symbolStack) {
+        return SymbolType.Int;
+    }
+
     public Instruction analyze(SymbolStack symbolStack, Function function) {
         return new Num(function, SymbolType.Int, number.getNum());
     }

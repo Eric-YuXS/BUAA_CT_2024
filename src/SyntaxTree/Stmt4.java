@@ -4,6 +4,7 @@ import LLVMIR.BasicBlock;
 import LLVMIR.Function;
 import LLVMIR.Instructions.BrConditional;
 import LLVMIR.Instructions.BrUnconditional;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -41,6 +42,14 @@ public class Stmt4 extends Stmt {  // Stmt → 'if' '(' Cond ')' Stmt [ 'else' S
             sb.append(elseTk).append(elseStmt);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    @Override
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        stmt.errorAnalyze(symbolStack, funcSymbol, isLoop);
+        if (elseStmt != null) {
+            elseStmt.errorAnalyze(symbolStack, funcSymbol, isLoop);
+        }
     }
 
     @Override

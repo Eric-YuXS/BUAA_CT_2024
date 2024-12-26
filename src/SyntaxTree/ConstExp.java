@@ -16,6 +16,10 @@ public class ConstExp implements SyntaxTreeNode {  // ConstExp → AddExp
         return addExp + "<ConstExp>\n";
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        addExp.errorAnalyze(symbolStack);
+    }
+
     public Instruction analyze(SymbolStack symbolStack, Function function) {
         return addExp.analyze(symbolStack, function);
     }

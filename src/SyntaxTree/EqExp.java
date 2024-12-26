@@ -31,6 +31,12 @@ public class EqExp implements SyntaxTreeNode {  // EqExp → RelExp | EqExp ('==
         return sb.append("<EqExp>\n").toString();
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        for (RelExp relExp : relExps) {
+            relExp.errorAnalyze(symbolStack);
+        }
+    }
+
     public Instruction analyze(SymbolStack symbolStack, Function function) {
         Instruction eqInstruction = relExps.get(0).analyze(symbolStack, function);
         if (operators.size() > 1 && eqInstruction.getSymbolType().isI1()) {

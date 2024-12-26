@@ -5,6 +5,7 @@ import LLVMIR.Function;
 import LLVMIR.Instruction;
 import LLVMIR.Instructions.Store;
 import LLVMIR.Instructions.Trunc;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -30,6 +31,12 @@ public class Stmt1 extends Stmt {  // Stmt → LVal '=' Exp ';'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    @Override
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        lVal.errorAnalyze(symbolStack, true);
+        exp.errorAnalyze(symbolStack);
     }
 
     @Override

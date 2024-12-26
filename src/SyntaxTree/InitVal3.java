@@ -21,6 +21,10 @@ public class InitVal3 extends InitVal {  // InitVal → StringConst
     }
 
     @Override
+    public void errorAnalyze(SymbolStack symbolStack) {
+    }
+
+    @Override
     public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
         return null;
     }

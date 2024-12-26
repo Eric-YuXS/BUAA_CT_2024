@@ -21,6 +21,11 @@ public class InitVal1 extends InitVal {  // InitVal → Exp
     }
 
     @Override
+    public void errorAnalyze(SymbolStack symbolStack) {
+        exp.errorAnalyze(symbolStack);
+    }
+
+    @Override
     public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
         return new ArrayList<>(Collections.singletonList(exp.analyze(symbolStack, function)));
     }

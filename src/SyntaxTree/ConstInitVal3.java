@@ -20,6 +20,9 @@ public class ConstInitVal3 extends ConstInitVal {  // ConstInitVal → StringCon
         return stringConst + "<ConstInitVal>\n";
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+    }
+
     public ArrayList<Instruction> analyze(SymbolStack symbolStack, Function function) {
         return null;
     }

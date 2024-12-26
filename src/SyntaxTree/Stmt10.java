@@ -6,6 +6,7 @@ import LLVMIR.Instruction;
 import LLVMIR.Instructions.CallGetChar;
 import LLVMIR.Instructions.Store;
 import LLVMIR.Instructions.Trunc;
+import frontend.FuncSymbol;
 import frontend.SymbolStack;
 import frontend.Token;
 
@@ -29,7 +30,6 @@ public class Stmt10 extends Stmt {  // Stmt → LVal '=' 'getchar''('')'';'
 
     @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder();
         sb.append(lVal).append(assign).append(getchar).append(lParent);
         if (rParent != null) {
@@ -39,6 +39,11 @@ public class Stmt10 extends Stmt {  // Stmt → LVal '=' 'getchar''('')'';'
             sb.append(semicn);
         }
         return sb.append("<Stmt>\n").toString();
+    }
+
+    @Override
+    public void errorAnalyze(SymbolStack symbolStack, FuncSymbol funcSymbol, boolean isLoop) {
+        lVal.errorAnalyze(symbolStack, true);
     }
 
     @Override

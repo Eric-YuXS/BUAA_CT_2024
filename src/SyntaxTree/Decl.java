@@ -9,6 +9,10 @@ public class Decl implements SyntaxTreeNode {  // Decl → ConstDecl | VarDecl
         return "super<Decl>\n";
     }
 
+    public void errorAnalyze(SymbolStack symbolStack) {
+        System.err.println("super<Decl>");
+    }
+
     public void analyze(SymbolStack symbolStack, Module module) {
         System.err.println("super<Decl>");
     }

@@ -17,6 +17,11 @@ public class Decl2 extends Decl {  // Decl → VarDecl
     }
 
     @Override
+    public void errorAnalyze(SymbolStack symbolStack) {
+        varDecl.errorAnalyze(symbolStack);
+    }
+
+    @Override
     public void analyze(SymbolStack symbolStack, Module module) {
         varDecl.analyze(symbolStack, module);
     }
