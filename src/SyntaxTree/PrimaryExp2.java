@@ -25,7 +25,9 @@ public class PrimaryExp2 extends PrimaryExp {  // PrimaryExp → LVal
 
     public Instruction analyze(SymbolStack symbolStack, Function function) {
         Instruction pointerInstruction = lVal.analyze(symbolStack, function, false);
-        if (pointerInstruction.getSymbolType().isVar()) {
+        if (function == null) {
+            return pointerInstruction;
+        } else if (pointerInstruction.getSymbolType().isVar()) {
             Load loadInstruction = new Load(function, pointerInstruction.getSymbolType(), pointerInstruction);
             function.getCurBasicBlock().addInstruction(loadInstruction);
             return loadInstruction;

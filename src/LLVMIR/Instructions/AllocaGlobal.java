@@ -20,6 +20,14 @@ public class AllocaGlobal extends Instruction {
         return size;
     }
 
+    public int getInitValue(int index) {
+        if (getUses().size() > index) {
+            return getUses().get(index).getValue();
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public String toString() {
         ArrayList<Value> uses = getUses();
