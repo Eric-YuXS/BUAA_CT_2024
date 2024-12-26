@@ -13,6 +13,10 @@ public class VarGlobal extends Instruction {
                 new ArrayList<>(Collections.singletonList(valueInstruction)));
     }
 
+    public int getInitValue() {
+        return getUses().get(0).getValue();
+    }
+
     @Override
     public String toString() {
         return "@" + getName() + " = dso_local global " + getSymbolType().toValueString() + " " +

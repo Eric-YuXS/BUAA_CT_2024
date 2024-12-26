@@ -68,14 +68,30 @@ public class LVal implements SyntaxTreeNode {  // LVal → Ident ['[' Exp ']']
         }
         if (exp != null) {
             Instruction indexInstruction = exp.analyze(symbolStack, function);
-            Instruction getElementPointerInstruction = new GetElementPointer(function,
-                    symbol.getSymbolType(), symbol.getInstruction(), indexInstruction,
-                    symbol.getInstruction() instanceof Alloca ? ((Alloca) symbol.getInstruction()).getSize() :
-                            symbol.getInstruction() instanceof AllocaGlobal ? ((AllocaGlobal) symbol.getInstruction()).getSize() :
-                                    symbol.getInstruction() instanceof AllocaGlobalString ?
-                                            ((AllocaGlobalString) symbol.getInstruction()).getSize() : -1);
-            function.getCurBasicBlock().addInstruction(getElementPointerInstruction);
-            return getElementPointerInstruction;
+            if (function == null) {
+                if (symbol.getSymbolType().isI32()) {
+                    if (symbol.getInstruction() instanceof AllocaGlobal) {
+                        return Num.getNum(null, ((AllocaGlobal) symbol.getInstruction()).getInitValue(indexInstruction.getValue()));
+                    } else {
+                        return Num.getNum(null, ((AllocaGlobalString) symbol.getInstruction()).getInitValue(indexInstruction.getValue()));
+                    }
+                } else {
+                    if (symbol.getInstruction() instanceof AllocaGlobal) {
+                        return Num.getChar(null, ((AllocaGlobal) symbol.getInstruction()).getInitValue(indexInstruction.getValue()));
+                    } else {
+                        return Num.getChar(null, ((AllocaGlobalString) symbol.getInstruction()).getInitValue(indexInstruction.getValue()));
+                    }
+                }
+            } else {
+                Instruction getElementPointerInstruction = new GetElementPointer(function,
+                        symbol.getSymbolType(), symbol.getInstruction(), indexInstruction,
+                        symbol.getInstruction() instanceof Alloca ? ((Alloca) symbol.getInstruction()).getSize() :
+                                symbol.getInstruction() instanceof AllocaGlobal ? ((AllocaGlobal) symbol.getInstruction()).getSize() :
+                                        symbol.getInstruction() instanceof AllocaGlobalString ?
+                                                ((AllocaGlobalString) symbol.getInstruction()).getSize() : -1);
+                function.getCurBasicBlock().addInstruction(getElementPointerInstruction);
+                return getElementPointerInstruction;
+            }
         } else if (symbol.getSymbolType().isArray()) {
             Instruction getElementPointerInstruction = new GetArrayPointer(function, symbol.getSymbolType(), symbol.getInstruction(),
                     symbol.getInstruction() instanceof Alloca ? ((Alloca) symbol.getInstruction()).getSize() :
@@ -85,7 +101,15 @@ public class LVal implements SyntaxTreeNode {  // LVal → Ident ['[' Exp ']']
             function.getCurBasicBlock().addInstruction(getElementPointerInstruction);
             return getElementPointerInstruction;
         } else {
-            return symbol.getInstruction();
+            if (function == null) {
+                if (symbol.getSymbolType().isI32()) {
+                    return Num.getNum(null, ((VarGlobal) symbol.getInstruction()).getInitValue());
+                } else {
+                    return Num.getChar(null, ((VarGlobal) symbol.getInstruction()).getInitValue());
+                }
+            } else {
+                return symbol.getInstruction();
+            }
         }
     }
 }

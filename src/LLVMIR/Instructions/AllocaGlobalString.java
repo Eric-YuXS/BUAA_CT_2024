@@ -7,17 +7,27 @@ import frontend.Symbol;
 import java.util.ArrayList;
 
 public class AllocaGlobalString extends Instruction {
+    private final String oriString;
     private String string;
     private final int size;
 
     public AllocaGlobalString(Symbol symbol, int size, String string) {
         super(null, symbol.getSymbolName(), ValueType.POINTER, symbol.getSymbolType(), new ArrayList<>());
+        this.oriString = string.substring(1, string.length() - 1);
         this.size = size;
         prepareString(string);
     }
 
     public int getSize() {
         return size;
+    }
+
+    public int getInitValue(int index) {
+        if (oriString.length() > index) {
+            return oriString.charAt(index);
+        } else {
+            return 0;
+        }
     }
 
     private void prepareString(String string) {
